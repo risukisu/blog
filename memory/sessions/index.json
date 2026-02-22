@@ -1,0 +1,14 @@
+{
+  "sessions": [
+    {
+      "id": "2026-02-22-initial-project-setup",
+      "name": "Initial Project Setup",
+      "focus": "Scaffolded blog project — Astro + Tailwind + GitHub Pages, skills, memory system",
+      "created": "2026-02-22",
+      "lastActive": "2026-02-22",
+      "file": "2026-02-22-initial-project-setup.md"
+    }
+  ],
+  "archived": [],
+  "schema_version": "1.0"
+}

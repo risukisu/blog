@@ -1,0 +1,47 @@
+---
+interface Props {
+	command: string;
+	user?: string;
+	cursor?: boolean;
+}
+
+const { command, user = 'visitor@risu', cursor = false } = Astro.props;
+---
+
+<div class="terminal-prompt">
+	<span class="user">{user}</span>
+	<span class="tilde"> ~ </span>
+	<span class="dollar">$ </span>
+	<span class="command">{command}</span>
+	{cursor && <span class="cursor">█</span>}
+</div>
+
+<style>
+	.terminal-prompt {
+		font-size: 0.9em;
+		margin: 1em 0 0.5em;
+		white-space: nowrap;
+		overflow-x: auto;
+	}
+	.user {
+		color: var(--text-muted);
+	}
+	.tilde {
+		color: var(--text-muted);
+	}
+	.dollar {
+		color: var(--green);
+		font-weight: 700;
+	}
+	.command {
+		color: var(--cyan);
+	}
+	.cursor {
+		color: var(--green);
+		animation: blink 1s step-end infinite;
+	}
+	@keyframes blink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
+	}
+</style>

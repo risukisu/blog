@@ -1,0 +1,69 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AsciiBox from '../components/AsciiBox.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Me — ${SITE_TITLE}`} description="about risu" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat about.md" />
+
+			<AsciiBox title="risu">
+				<p>
+					hey — i'm risu. i make things with code, play too many games,
+					and write down whatever sticks.
+				</p>
+				<p>
+					this is where the random memories live. fragments from the terminal
+					and beyond — gaming stories, life updates, work notes, and everything
+					that doesn't fit anywhere else.
+				</p>
+			</AsciiBox>
+
+			<AsciiBox title="links">
+				<ul class="link-list">
+					<li><a href="https://substack.com" target="_blank" class="featured">[&gt;] Substack</a></li>
+					<li><a href="https://github.com/risukisu" target="_blank">[&gt;] GitHub</a></li>
+				</ul>
+			</AsciiBox>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	p {
+		margin: 0.5em 0;
+	}
+	.link-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.link-list li {
+		margin: 0.4em 0;
+	}
+	.link-list a {
+		color: var(--text);
+		text-decoration: none;
+		transition: color 0.2s, text-shadow 0.2s;
+	}
+	.link-list a:hover {
+		color: var(--cyan);
+		text-shadow: var(--glow-cyan);
+	}
+	.link-list a.featured {
+		color: var(--cyan);
+		font-weight: 700;
+		text-shadow: var(--glow-cyan);
+	}
+</style>

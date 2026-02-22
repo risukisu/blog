@@ -1,0 +1,33 @@
+---
+interface Props {
+	variant?: 'line' | 'dots' | 'arrow' | 'eof';
+}
+
+const { variant = 'line' } = Astro.props;
+
+const dividers: Record<string, string> = {
+	line: '────────────────────────────────────────',
+	dots: '· · · · · · · · · · · · · · · · · · · ·',
+	arrow: '──────────────────── ▸',
+	eof: '── EOF ──',
+};
+---
+
+<div class:list={["ascii-divider", variant]}>
+	{dividers[variant]}
+</div>
+
+<style>
+	.ascii-divider {
+		color: var(--border);
+		text-align: center;
+		margin: 1.5em 0;
+		overflow: hidden;
+		white-space: nowrap;
+		user-select: none;
+		font-size: 0.85em;
+	}
+	.eof {
+		color: var(--text-muted);
+	}
+</style>

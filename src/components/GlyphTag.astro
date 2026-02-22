@@ -1,0 +1,43 @@
+---
+interface Props {
+	tag: string;
+	active?: boolean;
+	href?: string;
+}
+
+const { tag, active = false, href } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag
+	class:list={["glyph-tag", { active }]}
+	{...(href ? { href } : { type: "button" })}
+	data-tag={tag}
+>
+	[{tag}]
+</Tag>
+
+<style>
+	.glyph-tag {
+		display: inline-block;
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.8em;
+		color: var(--text-muted);
+		background: none;
+		border: 1px solid transparent;
+		padding: 0.15em 0.3em;
+		cursor: pointer;
+		text-decoration: none;
+		transition: color 0.2s, text-shadow 0.2s, border-color 0.2s;
+		border-radius: 2px;
+	}
+	.glyph-tag:hover {
+		color: var(--cyan);
+		text-shadow: var(--glow-cyan);
+	}
+	.glyph-tag.active {
+		color: var(--cyan);
+		border-color: var(--cyan);
+		text-shadow: var(--glow-cyan);
+	}
+</style>

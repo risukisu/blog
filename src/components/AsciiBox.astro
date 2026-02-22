@@ -1,0 +1,69 @@
+---
+interface Props {
+	title?: string;
+	class?: string;
+}
+
+const { title, class: className } = Astro.props;
+---
+
+<div class:list={["ascii-box", className]}>
+	{title ? (
+		<div class="ascii-box-top">
+			<span class="corner">╔═</span><span class="title-text"> {title} </span><span class="fill">═══════════════════════════════════════</span><span class="corner-end">╗</span>
+		</div>
+	) : (
+		<div class="ascii-box-top">
+			<span class="corner">╔</span><span class="fill">════════════════════════════════════════</span><span class="corner-end">╗</span>
+		</div>
+	)}
+	<div class="ascii-box-content">
+		<span class="side">║</span>
+		<div class="inner"><slot /></div>
+		<span class="side">║</span>
+	</div>
+	<div class="ascii-box-bottom">
+		<span class="corner">╚</span><span class="fill">════════════════════════════════════════</span><span class="corner-end">╝</span>
+	</div>
+</div>
+
+<style>
+	.ascii-box {
+		margin: 1.5em 0;
+	}
+	.ascii-box-top, .ascii-box-bottom {
+		display: flex;
+		overflow: hidden;
+		color: var(--border);
+		line-height: 1;
+		user-select: none;
+	}
+	.corner, .corner-end {
+		flex-shrink: 0;
+		color: var(--cyan);
+	}
+	.fill {
+		flex: 1;
+		overflow: hidden;
+		white-space: nowrap;
+		color: var(--border);
+	}
+	.title-text {
+		flex-shrink: 0;
+		color: var(--cyan);
+		font-weight: 700;
+	}
+	.ascii-box-content {
+		display: flex;
+	}
+	.side {
+		flex-shrink: 0;
+		color: var(--border);
+		user-select: none;
+	}
+	.inner {
+		flex: 1;
+		padding: 0.75em 1em;
+		min-width: 0;
+	}
+</style>

@@ -1,114 +1,189 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import Footer from '../../components/Footer.astro';
+import TerminalPrompt from '../../components/TerminalPrompt.astro';
+import AsciiBox from '../../components/AsciiBox.astro';
+import AsciiDivider from '../../components/AsciiDivider.astro';
+import GlyphTag from '../../components/GlyphTag.astro';
+import PostCard from '../../components/PostCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+
+const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title={`Blog — ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+			<TerminalPrompt command="ls -la posts/" />
+
+			<AsciiBox title="filter">
+				<div class="filter-bar">
+					<input
+						type="text"
+						id="search-input"
+						placeholder="search..."
+						class="search-input"
+						autocomplete="off"
+					/>
+					<div class="tag-filters" id="tag-filters">
+						<button type="button" class="glyph-tag-btn active" data-tag="all">[all]</button>
+						{allTags.map(tag => (
+							<button type="button" class="glyph-tag-btn" data-tag={tag}>[{tag}]</button>
+						))}
+					</div>
+				</div>
+			</AsciiBox>
+
+			<div id="posts-list">
+				{posts.map((post, i) => (
+					<>
+						<div
+							class="post-item"
+							data-title={post.data.title.toLowerCase()}
+							data-description={post.data.description.toLowerCase()}
+							data-tags={post.data.tags.join(',')}
+						>
+							<PostCard
+								title={post.data.title}
+								date={post.data.pubDate}
+								description={post.data.description}
+								tags={post.data.tags}
+								href={`/blog/${post.id}/`}
+								variant="full"
+							/>
+						</div>
+						{i < posts.length - 1 && <AsciiDivider variant="dots" />}
+					</>
+				))}
+			</div>
+
+			<div id="no-results" class="no-results" style="display:none;">
+				<p>no matching posts found.</p>
+			</div>
 		</main>
 		<Footer />
+
+		<script is:inline>
+			(function() {
+				const input = document.getElementById('search-input');
+				const tagBtns = document.querySelectorAll('.glyph-tag-btn');
+				const postItems = document.querySelectorAll('.post-item');
+				const dividers = document.querySelectorAll('#posts-list .ascii-divider');
+				const noResults = document.getElementById('no-results');
+				let activeTag = 'all';
+
+				function filterPosts() {
+					const query = input.value.toLowerCase().trim();
+					let visibleCount = 0;
+
+					postItems.forEach(function(item) {
+						const title = item.dataset.title;
+						const desc = item.dataset.description;
+						const tags = item.dataset.tags;
+
+						const matchesSearch = !query || title.includes(query) || desc.includes(query);
+						const matchesTag = activeTag === 'all' || tags.split(',').includes(activeTag);
+						const visible = matchesSearch && matchesTag;
+
+						item.style.display = visible ? '' : 'none';
+						if (visible) visibleCount++;
+					});
+
+					// Hide dividers between hidden items
+					dividers.forEach(function(d) { d.style.display = 'none'; });
+					const visibleItems = Array.from(postItems).filter(function(i) { return i.style.display !== 'none'; });
+					for (let i = 0; i < visibleItems.length - 1; i++) {
+						const next = visibleItems[i].nextElementSibling;
+						if (next && next.classList.contains('ascii-divider')) {
+							next.style.display = '';
+						}
+					}
+
+					noResults.style.display = visibleCount === 0 ? '' : 'none';
+				}
+
+				input.addEventListener('input', filterPosts);
+
+				tagBtns.forEach(function(btn) {
+					btn.addEventListener('click', function() {
+						tagBtns.forEach(function(b) { b.classList.remove('active'); });
+						btn.classList.add('active');
+						activeTag = btn.dataset.tag;
+						filterPosts();
+					});
+				});
+			})();
+		</script>
 	</body>
 </html>
+
+<style>
+	.filter-bar {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75em;
+	}
+	.search-input {
+		width: 100%;
+		background: var(--bg);
+		border: 1px solid var(--border);
+		color: var(--text);
+		padding: 0.5em 0.75em;
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.85em;
+		border-radius: 2px;
+		outline: none;
+		transition: border-color 0.2s;
+		box-sizing: border-box;
+	}
+	.search-input:focus {
+		border-color: var(--cyan);
+	}
+	.search-input::placeholder {
+		color: var(--text-muted);
+	}
+	.tag-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.3em;
+	}
+	.glyph-tag-btn {
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.8em;
+		color: var(--text-muted);
+		background: none;
+		border: 1px solid transparent;
+		padding: 0.15em 0.3em;
+		cursor: pointer;
+		transition: color 0.2s, text-shadow 0.2s, border-color 0.2s;
+		border-radius: 2px;
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+	}
+	.glyph-tag-btn:hover {
+		color: var(--cyan);
+		text-shadow: var(--glow-cyan);
+	}
+	.glyph-tag-btn.active {
+		color: var(--cyan);
+		border-color: var(--cyan);
+		text-shadow: var(--glow-cyan);
+	}
+	.no-results {
+		color: var(--text-muted);
+		text-align: center;
+		padding: 2em 0;
+	}
+</style>

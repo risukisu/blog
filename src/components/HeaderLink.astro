@@ -6,19 +6,35 @@ type Props = HTMLAttributes<'a'>;
 const { href, class: className, ...props } = Astro.props;
 const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
 const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+const hrefClean = (href as string).replace('/blog/', '').replace('/blog', '');
+const isActive = hrefClean === '' ? pathname === '' || pathname === '/' : pathname.startsWith(hrefClean.replace('/', ''));
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>
-	<slot />
+	{isActive && <span class="prefix">&gt; </span>}<slot />
 </a>
+
 <style>
 	a {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
 		text-decoration: none;
+		color: var(--text-muted);
+		padding: 0.75em 0.5em;
+		font-size: 0.9em;
+		transition: color 0.2s;
+		min-height: 44px;
+	}
+	a:hover {
+		color: var(--text-bright);
+		text-shadow: none;
 	}
 	a.active {
-		font-weight: bolder;
-		text-decoration: underline;
+		color: var(--cyan);
+		font-weight: 700;
+	}
+	.prefix {
+		color: var(--green);
+		margin-right: 0.1em;
 	}
 </style>

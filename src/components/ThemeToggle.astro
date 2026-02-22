@@ -1,0 +1,98 @@
+---
+---
+
+<div class="theme-toggle-wrapper">
+	<span id="theme-warn" class="theme-warn">[WARN] light mode is for losers</span>
+	<button id="theme-toggle" type="button" class="theme-toggle">[DARK]</button>
+</div>
+
+<script is:inline>
+	(function() {
+		var btn = document.getElementById('theme-toggle');
+		var warn = document.getElementById('theme-warn');
+		var isLight = document.documentElement.classList.contains('light');
+		var clickCount = 0;
+		var clickTimer = null;
+		var REQUIRED_CLICKS = 5;
+
+		if (isLight) btn.textContent = '[LITE]';
+
+		btn.addEventListener('click', function() {
+			var currentlyLight = document.documentElement.classList.contains('light');
+
+			if (currentlyLight) {
+				document.documentElement.classList.remove('light');
+				localStorage.setItem('theme', 'dark');
+				btn.textContent = '[DARK]';
+				clickCount = 0;
+				warn.classList.remove('show');
+				return;
+			}
+
+			clickCount++;
+			clearTimeout(clickTimer);
+			clickTimer = setTimeout(function() { clickCount = 0; }, 800);
+
+			// pop animation on every click
+			warn.classList.remove('show', 'pop');
+			// force reflow to restart animation
+			void warn.offsetWidth;
+			warn.classList.add('show', 'pop');
+
+			if (clickCount >= REQUIRED_CLICKS) {
+				document.documentElement.classList.add('light');
+				localStorage.setItem('theme', 'light');
+				btn.textContent = '[LITE]';
+				clickCount = 0;
+				// hide the warning once they've actually switched
+				setTimeout(function() { warn.classList.remove('show', 'pop'); }, 300);
+			}
+		});
+	})();
+</script>
+
+<style>
+	.theme-toggle-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
+	}
+	.theme-toggle {
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.8em;
+		color: var(--text-muted);
+		background: none;
+		border: 1px solid var(--border);
+		padding: 0.3em 0.6em;
+		cursor: pointer;
+		transition: color 0.2s, border-color 0.2s;
+		border-radius: 2px;
+		flex-shrink: 0;
+	}
+	.theme-toggle:hover {
+		color: var(--amber);
+		border-color: var(--amber);
+	}
+	.theme-warn {
+		font-size: 0.7em;
+		color: var(--amber);
+		text-shadow: var(--glow-amber);
+		white-space: nowrap;
+		opacity: 0;
+		pointer-events: none;
+		transform: scale(0.8);
+		transition: opacity 0.2s, transform 0.2s;
+	}
+	.theme-warn.show {
+		opacity: 1;
+		transform: scale(1);
+	}
+	.theme-warn.pop {
+		animation: pop 0.3s ease-out;
+	}
+	@keyframes pop {
+		0% { transform: scale(0.6); opacity: 0; }
+		50% { transform: scale(1.1); }
+		100% { transform: scale(1); opacity: 1; }
+	}
+</style>

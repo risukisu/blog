@@ -12,6 +12,12 @@ export default defineConfig({
   base: '/blog',
   integrations: [mdx(), sitemap()],
 
+  markdown: {
+    shikiConfig: {
+      theme: 'github-dark',
+    },
+  },
+
   vite: {
     plugins: [tailwindcss()],
   },

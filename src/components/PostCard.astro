@@ -1,0 +1,82 @@
+---
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	title: string;
+	date: Date;
+	description: string;
+	tags?: string[];
+	href: string;
+	variant?: 'compact' | 'full';
+}
+
+const { title, date, description, tags = [], href, variant = 'full' } = Astro.props;
+---
+
+<a href={href} class:list={["post-card", variant]}>
+	<div class="post-header">
+		<span class="post-title">{title}</span>
+		<span class="post-date"><FormattedDate date={date} /></span>
+	</div>
+	{variant === 'full' && (
+		<p class="post-description">{description}</p>
+	)}
+	{tags.length > 0 && (
+		<div class="post-tags">
+			{tags.map(tag => <span class="tag">[{tag}]</span>)}
+		</div>
+	)}
+</a>
+
+<style>
+	.post-card {
+		display: block;
+		text-decoration: none;
+		padding: 0.75em 0;
+		transition: background 0.15s;
+	}
+	.post-card:hover {
+		text-shadow: none;
+	}
+	.post-card:hover .post-title {
+		color: var(--cyan);
+		text-shadow: var(--glow-cyan);
+	}
+	.post-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1em;
+		flex-wrap: wrap;
+	}
+	.post-title {
+		color: var(--text-bright);
+		font-weight: 700;
+		font-size: 1em;
+		transition: color 0.2s, text-shadow 0.2s;
+	}
+	.post-date {
+		color: var(--text-muted);
+		font-size: 0.8em;
+		flex-shrink: 0;
+	}
+	.post-description {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		margin: 0.3em 0 0;
+		line-height: 1.5;
+	}
+	.post-tags {
+		display: flex;
+		gap: 0.5em;
+		margin-top: 0.3em;
+		flex-wrap: wrap;
+	}
+	.tag {
+		font-size: 0.75em;
+		color: var(--text-muted);
+	}
+	.compact .post-header {
+		font-size: 0.95em;
+	}
+</style>

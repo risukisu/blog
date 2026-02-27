@@ -24,3 +24,6 @@
 - Node.js 20+
 - npm for packages
 - Git + GitHub CLI for version control
+
+## Planned Features (post v1.0)
+- **[+1] upvote button** — per-post, one vote per user, shared community counts. Needs external backend (Firebase/Supabase/Cloudflare Worker). Maybe later.

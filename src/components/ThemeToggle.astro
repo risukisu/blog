@@ -17,6 +17,15 @@
 
 		if (isLight) btn.textContent = '[LITE]';
 
+		function showWarn(msg) {
+			warn.textContent = msg;
+			warn.classList.remove('show', 'pop');
+			void warn.offsetWidth;
+			warn.classList.add('show', 'pop');
+		}
+
+		var hideTimer = null;
+
 		btn.addEventListener('click', function() {
 			var currentlyLight = document.documentElement.classList.contains('light');
 
@@ -26,26 +35,30 @@
 				btn.textContent = '[DARK]';
 				clickCount = 0;
 				warn.classList.remove('show');
+				clearTimeout(hideTimer);
 				return;
 			}
 
 			clickCount++;
 			clearTimeout(clickTimer);
-			clickTimer = setTimeout(function() { clickCount = 0; }, 800);
-
-			// pop animation on every click
-			warn.classList.remove('show', 'pop');
-			// force reflow to restart animation
-			void warn.offsetWidth;
-			warn.classList.add('show', 'pop');
+			clearTimeout(hideTimer);
+			clickTimer = setTimeout(function() { clickCount = 0; }, 3000);
 
 			if (clickCount >= REQUIRED_CLICKS) {
 				document.documentElement.classList.add('light');
 				localStorage.setItem('theme', 'light');
 				btn.textContent = '[LITE]';
 				clickCount = 0;
-				// hide the warning once they've actually switched
-				setTimeout(function() { warn.classList.remove('show', 'pop'); }, 300);
+				showWarn('[LITE] told you');
+				hideTimer = setTimeout(function() { warn.classList.remove('show', 'pop'); }, 3000);
+			} else if (clickCount === 1) {
+				showWarn('[WARN] light mode is for losers');
+				hideTimer = setTimeout(function() { warn.classList.remove('show', 'pop'); }, 3000);
+			} else {
+				var remaining = REQUIRED_CLICKS - clickCount;
+				var step = remaining === 1 ? 'step' : 'steps';
+				showWarn('You are ' + remaining + ' ' + step + ' away from being a loser');
+				hideTimer = setTimeout(function() { warn.classList.remove('show', 'pop'); }, 3000);
 			}
 		});
 	})();

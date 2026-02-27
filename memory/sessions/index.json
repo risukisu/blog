@@ -1,6 +1,14 @@
 {
   "sessions": [
     {
+      "id": "2026-02-22-terminal-redesign",
+      "name": "Terminal Roguelike Redesign",
+      "focus": "Full visual redesign — dark CRT aesthetic, ASCII components, squirrel mascot, tag system, theme toggle easter egg",
+      "created": "2026-02-22",
+      "lastActive": "2026-02-22",
+      "file": "2026-02-22-terminal-redesign.md"
+    },
+    {
       "id": "2026-02-22-initial-project-setup",
       "name": "Initial Project Setup",
       "focus": "Scaffolded blog project — Astro + Tailwind + GitHub Pages, skills, memory system",

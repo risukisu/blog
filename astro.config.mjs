@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://risukisu.github.io',
+  site: 'https://risu.pl',
   base: '/blog',
   integrations: [mdx(), sitemap()],
 

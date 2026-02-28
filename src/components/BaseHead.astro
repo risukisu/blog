@@ -15,14 +15,123 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const { title, description, image = FallbackImage } = Astro.props;
 ---
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TN2YY0219L"></script>
+<!-- Google Analytics (consent-gated) -->
 <script is:inline>
-	window.dataLayer = window.dataLayer || [];
-	function gtag(){dataLayer.push(arguments);}
-	gtag('js', new Date());
-	gtag('config', 'G-TN2YY0219L');
+	(function() {
+		var GA_ID = 'G-TN2YY0219L';
+		var consent = localStorage.getItem('cookie-consent');
+		if (consent === 'accepted') {
+			var s = document.createElement('script');
+			s.async = true;
+			s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+			document.head.appendChild(s);
+			window.dataLayer = window.dataLayer || [];
+			function gtag(){dataLayer.push(arguments);}
+			window.gtag = gtag;
+			gtag('js', new Date());
+			gtag('config', GA_ID);
+		}
+	})();
 </script>
+
+<!-- Cookie Consent Banner -->
+<script is:inline>
+	(function() {
+		var consent = localStorage.getItem('cookie-consent');
+		if (consent) return;
+
+		document.addEventListener('DOMContentLoaded', function() {
+			var banner = document.createElement('div');
+			banner.id = 'cookie-banner';
+			banner.innerHTML =
+				'<div class="cookie-inner">' +
+					'<span class="cookie-msg">[COOKIE] this site uses cookies for analytics. </span>' +
+					'<div class="cookie-buttons">' +
+						'<button id="cookie-accept" class="cookie-btn accept">[accept]</button>' +
+						'<button id="cookie-decline" class="cookie-btn decline">[decline]</button>' +
+					'</div>' +
+				'</div>';
+			document.body.appendChild(banner);
+
+			document.getElementById('cookie-accept').addEventListener('click', function() {
+				localStorage.setItem('cookie-consent', 'accepted');
+				banner.remove();
+				var GA_ID = 'G-TN2YY0219L';
+				var s = document.createElement('script');
+				s.async = true;
+				s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+				document.head.appendChild(s);
+				window.dataLayer = window.dataLayer || [];
+				function gtag(){dataLayer.push(arguments);}
+				window.gtag = gtag;
+				gtag('js', new Date());
+				gtag('config', GA_ID);
+			});
+
+			document.getElementById('cookie-decline').addEventListener('click', function() {
+				localStorage.setItem('cookie-consent', 'declined');
+				banner.remove();
+			});
+		});
+	})();
+</script>
+<style>
+	#cookie-banner {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 9999;
+		background: var(--bg-surface);
+		border-top: 1px solid var(--cyan);
+		padding: 1em;
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.85em;
+	}
+	.cookie-inner {
+		max-width: 720px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1em;
+		flex-wrap: wrap;
+	}
+	.cookie-msg {
+		color: var(--text);
+	}
+	.cookie-buttons {
+		display: flex;
+		gap: 0.5em;
+		flex-shrink: 0;
+	}
+	.cookie-btn {
+		font-family: "JetBrains Mono", monospace;
+		font-size: 1em;
+		border: 1px solid var(--border);
+		padding: 0.3em 0.8em;
+		cursor: pointer;
+		border-radius: 2px;
+		transition: color 0.2s, border-color 0.2s, text-shadow 0.2s;
+		background: none;
+		min-height: 44px;
+	}
+	.cookie-btn.accept {
+		color: var(--green);
+		border-color: var(--green);
+	}
+	.cookie-btn.accept:hover {
+		text-shadow: var(--glow-green);
+	}
+	.cookie-btn.decline {
+		color: var(--text-muted);
+	}
+	.cookie-btn.decline:hover {
+		color: var(--magenta);
+		border-color: var(--magenta);
+		text-shadow: var(--glow-magenta);
+	}
+</style>
 
 <!-- Global Metadata -->
 <meta charset="utf-8" />

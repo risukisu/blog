@@ -19,8 +19,10 @@ const { title, description, image = FallbackImage } = Astro.props;
 <script is:inline>
 	(function() {
 		var GA_ID = 'G-TN2YY0219L';
-		var consent = localStorage.getItem('cookie-consent');
-		if (consent === 'accepted') {
+
+		window._loadGA = function() {
+			if (window._gaLoaded) return;
+			window._gaLoaded = true;
 			var s = document.createElement('script');
 			s.async = true;
 			s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
@@ -30,58 +32,179 @@ const { title, description, image = FallbackImage } = Astro.props;
 			window.gtag = gtag;
 			gtag('js', new Date());
 			gtag('config', GA_ID);
+		};
+
+		if (localStorage.getItem('cookie-consent') === 'accepted') {
+			window._loadGA();
 		}
 	})();
 </script>
 
-<!-- Cookie Consent Banner -->
+<!-- Cookie Consent -->
 <script is:inline>
-	(function() {
+	document.addEventListener('DOMContentLoaded', function() {
 		var consent = localStorage.getItem('cookie-consent');
-		if (consent) return;
 
-		document.addEventListener('DOMContentLoaded', function() {
-			var banner = document.createElement('div');
+		// --- Persistent cookie icon (always visible) ---
+		var icon = document.createElement('button');
+		icon.id = 'cookie-icon';
+		icon.setAttribute('aria-label', 'Cookie preferences');
+		icon.title = 'Cookie preferences';
+		icon.innerHTML = '<svg viewBox="0 0 16 16" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+			'<circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.2"/>' +
+			'<circle cx="5" cy="5" r="1.2" fill="currentColor"/>' +
+			'<circle cx="10" cy="4" r="0.8" fill="currentColor"/>' +
+			'<circle cx="7" cy="9" r="1" fill="currentColor"/>' +
+			'<circle cx="11" cy="8" r="0.7" fill="currentColor"/>' +
+			'<circle cx="4" cy="11" r="0.9" fill="currentColor"/>' +
+			'<circle cx="9" cy="12" r="1.1" fill="currentColor"/>' +
+			'</svg>';
+		document.body.appendChild(icon);
+
+		// --- Preferences panel ---
+		var panel = document.createElement('div');
+		panel.id = 'cookie-panel';
+		panel.innerHTML =
+			'<div class="cp-header">[COOKIE] preferences</div>' +
+			'<p class="cp-text">this site uses cookies for analytics (google analytics).</p>' +
+			'<div class="cp-status">status: <span id="cp-status-val">' + (consent === 'accepted' ? 'accepted' : consent === 'declined' ? 'declined' : 'not set') + '</span></div>' +
+			'<div class="cp-buttons">' +
+				'<button id="cp-accept" class="cookie-btn accept">[accept]</button>' +
+				'<button id="cp-decline" class="cookie-btn decline">[decline]</button>' +
+			'</div>';
+		document.body.appendChild(panel);
+
+		// --- Full banner (first visit only) ---
+		var banner = null;
+		if (!consent) {
+			banner = document.createElement('div');
 			banner.id = 'cookie-banner';
 			banner.innerHTML =
 				'<div class="cookie-inner">' +
-					'<span class="cookie-msg">[COOKIE] this site uses cookies for analytics. </span>' +
+					'<span class="cookie-msg">[COOKIE] this site uses cookies for analytics.</span>' +
 					'<div class="cookie-buttons">' +
-						'<button id="cookie-accept" class="cookie-btn accept">[accept]</button>' +
-						'<button id="cookie-decline" class="cookie-btn decline">[decline]</button>' +
+						'<button class="cookie-btn accept" data-action="accept">[accept]</button>' +
+						'<button class="cookie-btn decline" data-action="decline">[decline]</button>' +
 					'</div>' +
 				'</div>';
 			document.body.appendChild(banner);
 
-			document.getElementById('cookie-accept').addEventListener('click', function() {
-				localStorage.setItem('cookie-consent', 'accepted');
-				banner.remove();
-				var GA_ID = 'G-TN2YY0219L';
-				var s = document.createElement('script');
-				s.async = true;
-				s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-				document.head.appendChild(s);
-				window.dataLayer = window.dataLayer || [];
-				function gtag(){dataLayer.push(arguments);}
-				window.gtag = gtag;
-				gtag('js', new Date());
-				gtag('config', GA_ID);
+			banner.querySelectorAll('.cookie-btn').forEach(function(btn) {
+				btn.addEventListener('click', function() {
+					setConsent(btn.dataset.action);
+					banner.remove();
+					banner = null;
+				});
 			});
+		}
 
-			document.getElementById('cookie-decline').addEventListener('click', function() {
-				localStorage.setItem('cookie-consent', 'declined');
-				banner.remove();
-			});
+		// --- Toggle panel on icon click ---
+		var panelOpen = false;
+		icon.addEventListener('click', function(e) {
+			e.stopPropagation();
+			panelOpen = !panelOpen;
+			panel.classList.toggle('open', panelOpen);
+			icon.classList.toggle('active', panelOpen);
 		});
-	})();
+
+		document.addEventListener('click', function(e) {
+			if (panelOpen && !panel.contains(e.target) && e.target !== icon) {
+				panelOpen = false;
+				panel.classList.remove('open');
+				icon.classList.remove('active');
+			}
+		});
+
+		// --- Accept / Decline from panel ---
+		document.getElementById('cp-accept').addEventListener('click', function() { setConsent('accept'); });
+		document.getElementById('cp-decline').addEventListener('click', function() { setConsent('decline'); });
+
+		function setConsent(action) {
+			var val = action === 'accept' ? 'accepted' : 'declined';
+			localStorage.setItem('cookie-consent', val);
+			document.getElementById('cp-status-val').textContent = val;
+
+			if (action === 'accept') {
+				window._loadGA();
+			}
+		}
+	});
 </script>
 <style>
+	#cookie-icon {
+		position: fixed;
+		bottom: 1em;
+		left: 1em;
+		z-index: 9998;
+		background: var(--bg-surface);
+		border: 1px solid var(--border);
+		color: var(--amber);
+		width: 36px;
+		height: 36px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		border-radius: 2px;
+		transition: color 0.2s, border-color 0.2s, text-shadow 0.2s;
+		padding: 0;
+	}
+	#cookie-icon:hover,
+	#cookie-icon.active {
+		border-color: var(--amber);
+		text-shadow: var(--glow-amber);
+		filter: drop-shadow(0 0 4px rgba(255, 183, 0, 0.3));
+	}
+	#cookie-panel {
+		position: fixed;
+		bottom: 3.5em;
+		left: 1em;
+		z-index: 9999;
+		background: var(--bg-surface);
+		border: 1px solid var(--border);
+		border-radius: 2px;
+		padding: 1em;
+		font-family: "JetBrains Mono", monospace;
+		font-size: 0.8em;
+		max-width: 320px;
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(8px);
+		transition: opacity 0.2s, transform 0.2s;
+	}
+	#cookie-panel.open {
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0);
+	}
+	.cp-header {
+		color: var(--amber);
+		font-weight: 700;
+		margin-bottom: 0.5em;
+	}
+	.cp-text {
+		color: var(--text-muted);
+		margin: 0 0 0.75em;
+		line-height: 1.5;
+	}
+	.cp-status {
+		color: var(--text-muted);
+		margin-bottom: 0.75em;
+	}
+	#cp-status-val {
+		color: var(--cyan);
+		font-weight: 700;
+	}
+	.cp-buttons {
+		display: flex;
+		gap: 0.5em;
+	}
 	#cookie-banner {
 		position: fixed;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		z-index: 9999;
+		z-index: 10000;
 		background: var(--bg-surface);
 		border-top: 1px solid var(--cyan);
 		padding: 1em;
@@ -100,7 +223,8 @@ const { title, description, image = FallbackImage } = Astro.props;
 	.cookie-msg {
 		color: var(--text);
 	}
-	.cookie-buttons {
+	.cookie-buttons,
+	.cp-buttons {
 		display: flex;
 		gap: 0.5em;
 		flex-shrink: 0;

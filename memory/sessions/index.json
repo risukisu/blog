@@ -1,6 +1,14 @@
 {
   "sessions": [
     {
+      "id": "2026-02-27-domain-and-features",
+      "name": "Custom Domain & Feature Work",
+      "focus": "Custom domain risu.pl setup, theme toggle rework, writing workflow, Prosaic install",
+      "created": "2026-02-27",
+      "lastActive": "2026-02-27",
+      "file": "2026-02-27-domain-and-features.md"
+    },
+    {
       "id": "2026-02-22-terminal-redesign",
       "name": "Terminal Roguelike Redesign",
       "focus": "Full visual redesign — dark CRT aesthetic, ASCII components, squirrel mascot, tag system, theme toggle easter egg",

@@ -1,22 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import TerminalPrompt from '../components/TerminalPrompt.astro';
 import AsciiBox from '../components/AsciiBox.astro';
-import PostCard from '../components/PostCard.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
-
-const posts = (await getCollection('blog'))
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-	.slice(0, 3);
+import { SITE_TITLE } from '../consts';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={SITE_TITLE} description="risu's corner of the internet" />
 	</head>
 	<body>
 		<Header />
@@ -46,26 +40,23 @@ const posts = (await getCollection('blog'))
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢄⠈⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠑⠢⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`
 }</pre>
-				<div class="hero-title">random memories</div>
+				<div class="hero-title">risu.pl</div>
+				<div class="hero-subtitle">random memories & other things</div>
 			</div>
 
-			<TerminalPrompt command="whoami" />
-			<p class="intro">
-				risu — collecting fragments of gaming, life, work, and everything between.
-			</p>
+			<TerminalPrompt command="ls -la" />
 
-			<TerminalPrompt command="cat recent_posts.md" />
-			<AsciiBox title="recent posts">
-				{posts.map((post) => (
-					<PostCard
-						title={post.data.title}
-						date={post.data.pubDate}
-						description={post.data.description}
-						tags={post.data.tags}
-						href={`/blog/${post.id}/`}
-						variant="compact"
-					/>
-				))}
+			<AsciiBox title="links">
+				<div class="link-list">
+					<a href="/blog" class="link-item">
+						<span class="link-glyph">[blog]</span>
+						<span class="link-desc">random memories — gaming, life, work, and everything between</span>
+					</a>
+					<a href="https://github.com/risukisu" target="_blank" class="link-item">
+						<span class="link-glyph">[github]</span>
+						<span class="link-desc">code & projects</span>
+					</a>
+				</div>
 			</AsciiBox>
 
 			<div class="cursor-line">
@@ -105,10 +96,39 @@ const posts = (await getCollection('blog'))
 		text-shadow: var(--glow-cyan);
 		letter-spacing: 0.1em;
 	}
-	.intro {
+	.hero-subtitle {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		margin-top: 0.25em;
+	}
+	.link-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75em;
+	}
+	.link-item {
+		display: flex;
+		gap: 0.75em;
+		align-items: baseline;
+		text-decoration: none;
+		padding: 0.4em 0;
+		transition: all 0.2s;
+	}
+	.link-item:hover {
+		text-shadow: var(--glow-cyan);
+	}
+	.link-item:hover .link-desc {
 		color: var(--text-bright);
-		font-size: 1em;
-		margin: 0.25em 0 2em;
+	}
+	.link-glyph {
+		color: var(--cyan);
+		font-weight: 700;
+		white-space: nowrap;
+	}
+	.link-desc {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		transition: color 0.2s;
 	}
 	.cursor-line {
 		margin-top: 2em;

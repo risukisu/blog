@@ -15,27 +15,34 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const { title, description, image = FallbackImage } = Astro.props;
 ---
 
-<!-- Google Analytics (consent-gated) -->
+<!-- Google Analytics (Advanced Consent Mode) -->
 <script is:inline>
 	(function() {
 		var GA_ID = 'G-TN2YY0219L';
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		window.gtag = gtag;
 
-		window._loadGA = function() {
-			if (window._gaLoaded) return;
-			window._gaLoaded = true;
-			var s = document.createElement('script');
-			s.async = true;
-			s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-			document.head.appendChild(s);
-			window.dataLayer = window.dataLayer || [];
-			function gtag(){dataLayer.push(arguments);}
-			window.gtag = gtag;
-			gtag('js', new Date());
-			gtag('config', GA_ID);
-		};
+		// Set default consent — denied until user accepts
+		gtag('consent', 'default', {
+			'analytics_storage': 'denied',
+			'ad_storage': 'denied',
+			'ad_user_data': 'denied',
+			'ad_personalization': 'denied'
+		});
 
+		// Load gtag immediately (sends cookieless pings when denied)
+		var s = document.createElement('script');
+		s.async = true;
+		s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+		document.head.appendChild(s);
+
+		gtag('js', new Date());
+		gtag('config', GA_ID);
+
+		// If user already accepted, grant analytics
 		if (localStorage.getItem('cookie-consent') === 'accepted') {
-			window._loadGA();
+			gtag('consent', 'update', { 'analytics_storage': 'granted' });
 		}
 	})();
 </script>
@@ -125,7 +132,9 @@ const { title, description, image = FallbackImage } = Astro.props;
 			document.getElementById('cp-status-val').textContent = val;
 
 			if (action === 'accept') {
-				window._loadGA();
+				window.gtag('consent', 'update', { 'analytics_storage': 'granted' });
+			} else {
+				window.gtag('consent', 'update', { 'analytics_storage': 'denied' });
 			}
 		}
 	});

@@ -9,7 +9,7 @@ I've been experiencing friction with a peer of mine at work. We're both good at 
 
 There's this thing I've been observing. In a professional setting (=work) one can observe the people and their actions, and based on those determine which of *The Four* a person belongs to. How?
 
-Draw a 2 by 2 matrix - on the X axis you have the Core, on the Y axis you have the Shell and the scales go from liquid to solid on both axes.
+Draw a 2 by 2 matrix - on the X axis you have the <mark>Core</mark>, on the Y axis you have the <mark>Shell</mark> and the scales go from liquid to solid on both axes.
 
 It would look like this:
 
@@ -22,6 +22,7 @@ It would look like this:
   │ Liquid Core │ The Glacier │ The Mist     │
   └─────────────┴─────────────┴──────────────┘
 ```
+<br />
 
 The Core is this intrinsic set of rules that are deeply embedded in a person -- this can be a set of values of personal principles one follows and won't break, maybe coming from upbringing or spiritual or religious practice. The Shell on the other hand is how a person reacts to a changing environment, how adaptable they are.
 

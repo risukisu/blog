@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
+import { rehypeLinks } from './src/plugins/rehype-links.js';
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,6 +16,7 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-dark',
     },
+    rehypePlugins: [rehypeLinks],
   },
 
   vite: {

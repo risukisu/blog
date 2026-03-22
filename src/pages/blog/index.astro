@@ -127,6 +127,65 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 				});
 			})();
 		</script>
+
+		<script is:inline>
+(function() {
+  var PREV_KEY = 'risu_previouslySeen';
+  var CURR_KEY = 'risu_currentlySeen';
+
+  try {
+    var postItems = document.querySelectorAll('.post-card[data-slug]');
+    var allSlugs = [];
+    postItems.forEach(function(card) {
+      if (card.dataset.slug) allSlugs.push(card.dataset.slug);
+    });
+
+    var previousRaw = localStorage.getItem(PREV_KEY);
+    var currentRaw = localStorage.getItem(CURR_KEY);
+
+    if (previousRaw === null) {
+      // First visit — seed both, no badges
+      localStorage.setItem(PREV_KEY, JSON.stringify(allSlugs));
+      localStorage.setItem(CURR_KEY, JSON.stringify(allSlugs));
+      return;
+    }
+
+    var previouslySeen = JSON.parse(previousRaw) || [];
+    var currentlySeen = currentRaw ? JSON.parse(currentRaw) : allSlugs;
+
+    // Find new slugs
+    var newSlugs = allSlugs.filter(function(slug) {
+      return previouslySeen.indexOf(slug) === -1;
+    });
+
+    // Inject [NEW] badges
+    newSlugs.forEach(function(slug) {
+      var card = document.querySelector('.post-card[data-slug="' + slug + '"]');
+      if (!card) return;
+      var titleSpan = card.querySelector('.post-title');
+      if (!titleSpan) return;
+
+      var badge = document.createElement('span');
+      badge.className = 'badge-new';
+      badge.textContent = 'new';
+
+      // Insert before [PL] badge if it exists, otherwise append
+      var plBadge = titleSpan.querySelector('[data-badge-pl]');
+      if (plBadge) {
+        titleSpan.insertBefore(badge, plBadge);
+      } else {
+        titleSpan.appendChild(badge);
+      }
+    });
+
+    // Rotate
+    localStorage.setItem(PREV_KEY, JSON.stringify(currentlySeen));
+    localStorage.setItem(CURR_KEY, JSON.stringify(allSlugs));
+  } catch(e) {
+    // localStorage unavailable — silently skip
+  }
+})();
+		</script>
 	</body>
 </html>
 

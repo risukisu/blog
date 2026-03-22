@@ -17,7 +17,7 @@ const { title, date, description, tags = [], href, variant = 'full', bilingual, 
 
 <a href={href} class:list={["post-card", variant]} data-slug={slug}>
 	<div class="post-header">
-		<span class="post-title">{title}{bilingual && <span class="badge-pl" data-badge-pl>[PL]</span>}</span>
+		<span class="post-title">{title}{bilingual && <span class="badge-pl" data-badge-pl>[EN|PL]</span>}</span>
 		<span class="post-date"><FormattedDate date={date} /></span>
 	</div>
 	{variant === 'full' && (

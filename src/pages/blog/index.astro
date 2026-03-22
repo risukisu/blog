@@ -61,6 +61,8 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 								tags={post.data.tags}
 								href={`/blog/${post.id}/`}
 								variant="full"
+								bilingual={post.data.bilingual}
+								slug={post.id}
 							/>
 						</div>
 						{i < posts.length - 1 && <AsciiDivider variant="dots" />}

@@ -8,14 +8,16 @@ interface Props {
 	tags?: string[];
 	href: string;
 	variant?: 'compact' | 'full';
+	bilingual?: boolean;
+	slug?: string;
 }
 
-const { title, date, description, tags = [], href, variant = 'full' } = Astro.props;
+const { title, date, description, tags = [], href, variant = 'full', bilingual, slug } = Astro.props;
 ---
 
-<a href={href} class:list={["post-card", variant]}>
+<a href={href} class:list={["post-card", variant]} data-slug={slug}>
 	<div class="post-header">
-		<span class="post-title">{title}</span>
+		<span class="post-title">{title}{bilingual && <span class="badge-pl" data-badge-pl>[PL]</span>}</span>
 		<span class="post-date"><FormattedDate date={date} /></span>
 	</div>
 	{variant === 'full' && (
@@ -75,6 +77,12 @@ const { title, date, description, tags = [], href, variant = 'full' } = Astro.pr
 	.tag {
 		font-size: 0.75em;
 		color: var(--text-muted);
+	}
+	.badge-pl {
+		color: var(--amber);
+		font-size: 0.75em;
+		font-weight: 400;
+		margin-left: 0.5em;
 	}
 	.compact .post-header {
 		font-size: 0.95em;

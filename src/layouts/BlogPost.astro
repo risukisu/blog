@@ -8,9 +8,23 @@ import FormattedDate from '../components/FormattedDate.astro';
 import AsciiBox from '../components/AsciiBox.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & {
+	bilingual?: boolean;
+	titlePl?: string;
+	descriptionPl?: string;
+};
 
-const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro.props;
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	tags = [],
+	bilingual = false,
+	titlePl,
+	descriptionPl,
+} = Astro.props;
 ---
 
 <html lang="en">
@@ -22,18 +36,42 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro
 		<Header />
 		<main>
 			<article>
-				<AsciiBox title={title}>
+				<AsciiBox title={bilingual ? undefined : title}>
+					{bilingual && (
+						<div class="bilingual-title">
+							<span data-title-en class="title-variant">{title}</span>
+							<span data-title-pl class="title-variant" style="display:none;">{titlePl}</span>
+						</div>
+					)}
 					<div class="post-meta">
-						<FormattedDate date={pubDate} />
+						<span data-date-en>
+							<FormattedDate date={pubDate} />
+						</span>
+						{bilingual && (
+							<span data-date-pl style="display:none;">
+								<time datetime={pubDate.toISOString()}>
+									{pubDate.toLocaleDateString('pl-PL', { year: 'numeric', month: 'short', day: 'numeric' })}
+								</time>
+							</span>
+						)}
 						{updatedDate && (
 							<span class="updated"> · updated <FormattedDate date={updatedDate} /></span>
 						)}
 					</div>
-					{tags.length > 0 && (
-						<div class="post-tags">
-							{tags.map(tag => <span class="tag">[{tag}]</span>)}
-						</div>
-					)}
+					<div class="post-meta-row">
+						{tags.length > 0 && (
+							<div class="post-tags">
+								{tags.map(tag => <span class="tag">[{tag}]</span>)}
+							</div>
+						)}
+						{bilingual && (
+							<span class="lang-toggle">
+								<span class="lang-option active" data-lang-btn="en">EN</span>
+								<span class="lang-sep">|</span>
+								<span class="lang-option" data-lang-btn="pl">PL</span>
+							</span>
+						)}
+					</div>
 				</AsciiBox>
 
 				{heroImage && (
@@ -50,6 +88,130 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro
 			</article>
 		</main>
 		<Footer />
+
+		{bilingual && (
+			<script is:inline>
+			(function() {
+				var KEY = 'risu_preferredLang';
+				var lang = localStorage.getItem(KEY) || 'en';
+
+				function setLang(newLang) {
+					lang = newLang;
+					localStorage.setItem(KEY, lang);
+
+					// Toggle content blocks
+					document.querySelectorAll('[data-lang]').forEach(function(el) {
+						el.style.display = el.dataset.lang === lang ? '' : 'none';
+					});
+
+					// Toggle titles
+					var titleEn = document.querySelector('[data-title-en]');
+					var titlePl = document.querySelector('[data-title-pl]');
+					if (titleEn) titleEn.style.display = lang === 'en' ? '' : 'none';
+					if (titlePl) titlePl.style.display = lang === 'pl' ? '' : 'none';
+
+					// Toggle dates
+					var dateEn = document.querySelector('[data-date-en]');
+					var datePl = document.querySelector('[data-date-pl]');
+					if (dateEn) dateEn.style.display = lang === 'en' ? '' : 'none';
+					if (datePl) datePl.style.display = lang === 'pl' ? '' : 'none';
+
+					// Toggle button active states
+					document.querySelectorAll('[data-lang-btn]').forEach(function(btn) {
+						btn.classList.toggle('active', btn.dataset.langBtn === lang);
+					});
+				}
+
+				// Init
+				setLang(lang);
+
+				// Click handlers
+				document.querySelectorAll('[data-lang-btn]').forEach(function(btn) {
+					btn.addEventListener('click', function() {
+						setLang(btn.dataset.langBtn);
+					});
+				});
+			})();
+			</script>
+		)}
+
+		<script is:inline>
+		(function() {
+			var prose = document.querySelector('.prose');
+			if (!prose) return;
+
+			var tooltip = null;
+			var showTimeout = null;
+
+			function createTooltip() {
+				var el = document.createElement('div');
+				el.className = 'link-preview-tooltip';
+				el.innerHTML = '<div class="preview-arrow"></div><div class="preview-text"></div><div class="preview-domain"></div>';
+				document.body.appendChild(el);
+				return el;
+			}
+
+			function positionTooltip(link) {
+				var rect = link.getBoundingClientRect();
+				var tipRect = tooltip.getBoundingClientRect();
+				var arrow = tooltip.querySelector('.preview-arrow');
+				var gap = 8;
+
+				var below = rect.bottom + gap + tipRect.height;
+				var flipAbove = below > window.innerHeight - 40;
+
+				var top, arrowClass;
+				if (flipAbove) {
+					top = rect.top + window.scrollY - tipRect.height - gap;
+					arrowClass = 'preview-arrow arrow-bottom';
+				} else {
+					top = rect.bottom + window.scrollY + gap;
+					arrowClass = 'preview-arrow arrow-top';
+				}
+
+				var left = rect.left + window.scrollX + rect.width / 2 - tipRect.width / 2;
+				left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+
+				tooltip.style.top = top + 'px';
+				tooltip.style.left = left + 'px';
+				arrow.className = arrowClass;
+				var arrowLeft = rect.left + window.scrollX + rect.width / 2 - left - 6;
+				arrow.style.left = Math.max(8, Math.min(arrowLeft, tipRect.width - 20)) + 'px';
+			}
+
+			prose.addEventListener('mouseover', function(e) {
+				var link = e.target.closest('a[data-preview]');
+				if (!link) return;
+				clearTimeout(showTimeout);
+				showTimeout = setTimeout(function() {
+					if (!tooltip) tooltip = createTooltip();
+					tooltip.querySelector('.preview-text').textContent = link.dataset.preview;
+					tooltip.querySelector('.preview-domain').textContent = link.dataset.domain || '';
+					link._origTitle = link.getAttribute('title');
+					link.removeAttribute('title');
+					tooltip.style.top = '-9999px';
+					tooltip.style.left = '-9999px';
+					tooltip.classList.add('visible');
+					requestAnimationFrame(function() { positionTooltip(link); });
+				}, 150);
+			});
+
+			prose.addEventListener('mouseout', function(e) {
+				var link = e.target.closest('a[data-preview]');
+				if (!link) return;
+				clearTimeout(showTimeout);
+				if (tooltip) tooltip.classList.remove('visible');
+				if (link._origTitle) {
+					link.setAttribute('title', link._origTitle);
+					delete link._origTitle;
+				}
+			});
+
+			prose.addEventListener('click', function() {
+				if (tooltip) tooltip.classList.remove('visible');
+			});
+		})();
+		</script>
 	</body>
 </html>
 
@@ -67,10 +229,15 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro
 	.updated {
 		font-style: italic;
 	}
+	.post-meta-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 0.3em;
+	}
 	.post-tags {
 		display: flex;
 		gap: 0.5em;
-		margin-top: 0.3em;
 		flex-wrap: wrap;
 	}
 	.tag {
@@ -88,5 +255,33 @@ const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro
 	.prose {
 		margin-top: 1.5em;
 		line-height: 1.8;
+	}
+	/* ── Language Toggle ── */
+	.bilingual-title {
+		font-weight: 700;
+		color: var(--cyan);
+		font-size: 1em;
+	}
+	.lang-toggle {
+		font-size: 0.8em;
+		flex-shrink: 0;
+	}
+	.lang-option {
+		color: var(--amber);
+		opacity: 0.4;
+		cursor: pointer;
+		transition: opacity 0.2s;
+	}
+	.lang-option.active {
+		opacity: 1;
+		cursor: default;
+	}
+	.lang-option:hover:not(.active) {
+		opacity: 0.7;
+	}
+	.lang-sep {
+		color: var(--amber);
+		opacity: 0.4;
+		margin: 0 0.2em;
 	}
 </style>

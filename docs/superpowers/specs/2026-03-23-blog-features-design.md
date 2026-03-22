@@ -52,6 +52,8 @@ Polish content here.
 
 Both blocks are rendered into the HTML. Client-side JS shows one and hides the other.
 
+**Authoring rule:** Blank lines are required after the opening `<div>` and before the closing `</div>` — this is how MDX distinguishes HTML wrappers from markdown content. Without blank lines, markdown inside the div renders as raw text.
+
 **Schema update** (`content.config.ts`):
 
 Add optional fields to the blog collection schema:
@@ -73,27 +75,37 @@ descriptionPl: z.string().optional(),
 - Cursor: pointer on the inactive option
 
 **Behavior:**
-- Default: EN (or reads from `localStorage` key `preferredLang` if previously set)
+- Default: EN (or reads from `localStorage` key `risu_preferredLang` if previously set)
 - Click toggles between EN/PL
-- Saves preference to `localStorage` as `preferredLang` — persists across posts and visits
+- Saves preference to `localStorage` as `risu_preferredLang` — persists across posts and visits
 - On toggle:
   - `data-lang="en"` divs show/hide
   - `data-lang="pl"` divs show/hide (inverse)
-  - AsciiBox title text swaps to `titlePl` / `title`
-  - Description swaps (if displayed)
-  - Date formatting switches locale (`en-us` / `pl-PL`)
+  - Title swaps: two `<span>` elements inside the AsciiBox (`data-title-en` and `data-title-pl`), toggle shows/hides them. Both are server-rendered by BlogPost.astro using the `title` and `titlePl` props.
+  - Date swaps: two `<time>` elements rendered side by side (`data-date-en` formatted with `en-us` locale, `data-date-pl` with `pl-PL`). Toggle shows/hides. Both are server-rendered at build time — no client-side date formatting needed.
 - No URL change, no page reload
 - Toggle only appears on posts where `bilingual: true`
+
+**Prop passing:** `[...slug].astro` must pass `bilingual`, `titlePl`, and `descriptionPl` from `post.data` through to the `BlogPost` layout. The BlogPost layout's Props type must be updated to accept these three new optional fields.
+
+**Toggle placement:** The toggle sits inside the post metadata area in `BlogPost.astro`, on the same line as the tags `<div>`. It is placed after the tags list, right-aligned within the metadata row using flex layout (`justify-content: space-between` on the tags row, tags on left, toggle on right). If no tags exist, toggle floats right alone.
 
 **HTML structure (in BlogPost.astro layout):**
 
 ```html
-<!-- Only rendered when bilingual is true -->
-<span class="lang-toggle" data-bilingual>
-  <span class="lang-option active" data-lang-btn="en">EN</span>
-  <span class="lang-sep">|</span>
-  <span class="lang-option" data-lang-btn="pl">PL</span>
-</span>
+<!-- Metadata row — tags + lang toggle -->
+<div class="post-meta-row" style="display:flex; justify-content:space-between; align-items:center;">
+  <div class="post-tags">
+    {tags.map(tag => <span>[{tag}]</span>)}
+  </div>
+  {bilingual && (
+    <span class="lang-toggle">
+      <span class="lang-option active" data-lang-btn="en">EN</span>
+      <span class="lang-sep">|</span>
+      <span class="lang-option" data-lang-btn="pl">PL</span>
+    </span>
+  )}
+</div>
 ```
 
 ### Blog Index Indicator
@@ -150,10 +162,10 @@ Links without a `title` attribute behave normally — no tooltip, just the exist
 - Subtle amber glow on the border: `box-shadow: 0 0 6px rgba(255, 183, 0, 0.15)`
 
 **Positioning:**
-- Appears below the link by default
-- Flips above if near viewport bottom
-- Horizontally centered on the link, clamped to viewport edges
-- Small CSS triangle/arrow pointing to the link
+- Appears below the link by default (8px gap)
+- Flips above if the tooltip would extend within 40px of the viewport bottom
+- Horizontally centered on the link, clamped to 8px from viewport edges
+- Small CSS triangle arrow (6px, `border` trick) pointing to the link, colored amber to match the border
 
 **Animation:**
 - Fade in on hover (150ms delay before showing, to avoid flicker on casual mouse movement)
@@ -175,7 +187,7 @@ This applies regardless of whether the link has a title/preview. Implemented as 
 ### Implementation Approach
 
 **Option A — rehype plugin (build-time):**
-Transform `<a title="...">` into `<a data-preview="..." data-domain="...">` at build time. Strip the `title` to prevent native tooltip. A client-side script reads `data-preview` and creates the tooltip card.
+Transform `<a title="...">` into `<a data-preview="..." data-domain="..." title="...">` at build time. The `title` attribute is **kept** for accessibility (JS-disabled fallback shows native browser tooltip). The client-side script hides the native tooltip on hover by temporarily removing `title`, then restoring it on mouse leave.
 
 This is the recommended approach — the heavy lifting (attribute transformation, domain extraction, external link detection) happens at build time. The client script is minimal (position tooltip, show/hide).
 
@@ -200,21 +212,22 @@ Uses `localStorage` to track which post slugs a visitor has seen.
 ```
 previouslySeen = localStorage.get('risu_previouslySeen')
 currentlySeen = localStorage.get('risu_currentlySeen')
+allSlugs = getAllPostSlugs()
 
 if previouslySeen is null:
     // First visit ever — no badges
-    // Store all current post slugs as currentlySeen
-    currentlySeen = getAllPostSlugs()
-    localStorage.set('risu_currentlySeen', currentlySeen)
+    // Seed both keys so the NEXT visit triggers the returning-visitor branch
+    localStorage.set('risu_previouslySeen', allSlugs)
+    localStorage.set('risu_currentlySeen', allSlugs)
     return  // No badges shown
 
 // Returning visitor
-newSlugs = getAllPostSlugs().filter(slug => !previouslySeen.includes(slug))
+newSlugs = allSlugs.filter(slug => !previouslySeen.includes(slug))
 // Mark newSlugs with [NEW] badge
 
 // Rotate: previous = current, current = all current slugs
 localStorage.set('risu_previouslySeen', currentlySeen)
-localStorage.set('risu_currentlySeen', getAllPostSlugs())
+localStorage.set('risu_currentlySeen', allSlugs)
 ```
 
 **Why slug-based, not date-based:** The user republishes old content (e.g., Gambleriada from 2013) on the new blog. Date-based detection would miss it because `pubDate` is in the past. Slug-based detection correctly identifies it as unseen.
@@ -224,6 +237,8 @@ localStorage.set('risu_currentlySeen', getAllPostSlugs())
 ### Badge UI
 
 **Position:** Next to the post title on `risu.pl/blog`, before the `[PL]` indicator if both apply. Order: `Post Title [NEW] [PL]`
+
+**DOM insertion:** The `[PL]` badge is server-rendered in `PostCard.astro` with a `data-badge-pl` attribute. The `[NEW]` badge is JS-injected. The script inserts the `[NEW]` span **before** the `[PL]` badge element (using `insertBefore` on the `data-badge-pl` element), or appends after the title if no `[PL]` badge exists. Each post card's title container gets a `data-slug` attribute for the script to target.
 
 **Appearance:**
 - Solid green background (`var(--green)`, `#39ff14`)
@@ -259,9 +274,10 @@ localStorage.set('risu_currentlySeen', getAllPostSlugs())
 | File | Changes |
 |------|---------|
 | `content.config.ts` | Add `bilingual`, `titlePl`, `descriptionPl` to schema |
-| `src/pages/blog/index.astro` | Add `[PL]` badge, `[NEW]` badge, localStorage script |
-| `src/pages/blog/[...slug].astro` | Handle `.mdx` bilingual posts, pass bilingual data to layout |
-| `src/layouts/BlogPost.astro` | Add language toggle UI, title-swap script, lang-toggle styling |
+| `src/pages/blog/index.astro` | Add `[NEW]` badge localStorage script |
+| `src/pages/blog/[...slug].astro` | Pass `bilingual`, `titlePl`, `descriptionPl` from `post.data` to BlogPost layout |
+| `src/layouts/BlogPost.astro` | Add language toggle UI, dual title/date elements, title-swap script, lang-toggle styling. Update Props type. |
+| `src/components/PostCard.astro` | Add `[PL]` badge (server-rendered), `data-slug` attribute on title container |
 | `src/styles/global.css` | Link preview tooltip styles, new-post badge styles |
 | `astro.config.mjs` | Add rehype plugin for external links + link preview transformation |
 | `content/blog/gambleriada.mdx` | New: merged bilingual post (from two draft files) |

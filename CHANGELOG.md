@@ -2,6 +2,39 @@
 
 All notable changes to this project are documented here.
 
+## 2026-03-22 — Bilingual Posts, Link Previews, New Post Indicator
+
+### Added
+- **Language toggle (EN/PL)** — bilingual blog posts with seamless in-page switching. Amber `[EN | PL]` toggle in the post metadata area. Active language is bright, inactive is muted. Preference saved to localStorage and persists across posts and visits. Title, date, and body content all swap on toggle.
+- **Bilingual content model** — single `.mdx` file per bilingual post with `<div data-lang="en">` / `<div data-lang="pl">` blocks. New frontmatter fields: `bilingual`, `titlePl`, `descriptionPl`.
+- **`[EN|PL]` badge on blog index** — amber indicator next to post titles for bilingual posts, so readers know before clicking.
+- **Link preview tooltips** — hover over any link with a title attribute to see an amber-bordered tooltip with a preview snippet and domain name. Rehype plugin transforms links at build time. External links automatically open in new tabs. JS-disabled fallback shows native browser tooltip.
+- **New post indicator** — returning visitors see a blinking green `new` badge next to posts they haven't seen before. Uses localStorage slug tracking with session rotation (badges persist for the session, clear on next visit). First-time visitors see no badges. Works for republished old content too (slug-based, not date-based).
+- **Rehype plugin** (`src/plugins/rehype-links.js`) — build-time link enhancement: external link handling + title-to-data-preview transformation.
+
+### Published
+- **"Gambleriada and the story of a mug"** — first bilingual post (EN/PL). Originally written Dec 19, 2013. A memory from Gambleriada 1998 about a mug, a book, an autograph and a security guard.
+
+## 2026-03-21 — Content Restructure & Drafts
+
+### Changed
+- Moved blog content from `src/content/` to `content/` (Astro 5 convention)
+- Gambleriada posts moved to `content/drafts/` (not ready for publishing at the time)
+
+## 2026-03-05 — Three Blog Posts & Polish
+
+### Added
+- **"The 4. Why the Mountain sometimes fights with the Mist"** — leadership/work post with a 2x2 alignment matrix (Mountain, River, Glacier, Mist)
+- **"Random messages"** — career/work post
+- **"Nostalgia is a hell of a drug"** — gaming/life post (originally Sep 2024)
+
+### Changed
+- Widened blog post content area from 720px to 800px
+- Highlighted key terms in "The Four" post (Core/Shell, matrix labels)
+- Highlighted "random memories" text on Me page
+- Replaced favicon with SerenityOS chipmunk emoji
+- Switched GA4 to Advanced Consent Mode for cookieless analytics
+
 ## 2026-02-28 — Base Path Fix, Landing Page & GDPR
 
 ### Fixed

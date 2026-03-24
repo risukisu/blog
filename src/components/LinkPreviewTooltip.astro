@@ -1,0 +1,79 @@
+<!--
+  Link Preview Tooltip — global component
+  Drop into any page to enable amber tooltips on links with data-preview attribute.
+  CSS lives in global.css. This component only provides the script.
+-->
+<script is:inline>
+(function() {
+	var tooltip = null;
+	var showTimeout = null;
+
+	function createTooltip() {
+		var el = document.createElement('div');
+		el.className = 'link-preview-tooltip';
+		el.innerHTML = '<div class="preview-arrow"></div><div class="preview-text"></div><div class="preview-domain"></div>';
+		document.body.appendChild(el);
+		return el;
+	}
+
+	function positionTooltip(link) {
+		var rect = link.getBoundingClientRect();
+		var tipRect = tooltip.getBoundingClientRect();
+		var arrow = tooltip.querySelector('.preview-arrow');
+		var gap = 8;
+
+		var below = rect.bottom + gap + tipRect.height;
+		var flipAbove = below > window.innerHeight - 40;
+
+		var top, arrowClass;
+		if (flipAbove) {
+			top = rect.top + window.scrollY - tipRect.height - gap;
+			arrowClass = 'preview-arrow arrow-bottom';
+		} else {
+			top = rect.bottom + window.scrollY + gap;
+			arrowClass = 'preview-arrow arrow-top';
+		}
+
+		var left = rect.left + window.scrollX + rect.width / 2 - tipRect.width / 2;
+		left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+
+		tooltip.style.top = top + 'px';
+		tooltip.style.left = left + 'px';
+		arrow.className = arrowClass;
+		var arrowLeft = rect.left + window.scrollX + rect.width / 2 - left - 6;
+		arrow.style.left = Math.max(8, Math.min(arrowLeft, tipRect.width - 20)) + 'px';
+	}
+
+	document.body.addEventListener('mouseover', function(e) {
+		var link = e.target.closest('a[data-preview]');
+		if (!link) return;
+		clearTimeout(showTimeout);
+		showTimeout = setTimeout(function() {
+			if (!tooltip) tooltip = createTooltip();
+			tooltip.querySelector('.preview-text').textContent = link.dataset.preview;
+			tooltip.querySelector('.preview-domain').textContent = link.dataset.domain || '';
+			link._origTitle = link.getAttribute('title');
+			link.removeAttribute('title');
+			tooltip.style.top = '-9999px';
+			tooltip.style.left = '-9999px';
+			tooltip.classList.add('visible');
+			requestAnimationFrame(function() { positionTooltip(link); });
+		}, 150);
+	});
+
+	document.body.addEventListener('mouseout', function(e) {
+		var link = e.target.closest('a[data-preview]');
+		if (!link) return;
+		clearTimeout(showTimeout);
+		if (tooltip) tooltip.classList.remove('visible');
+		if (link._origTitle) {
+			link.setAttribute('title', link._origTitle);
+			delete link._origTitle;
+		}
+	});
+
+	document.body.addEventListener('click', function() {
+		if (tooltip) tooltip.classList.remove('visible');
+	});
+})();
+</script>

@@ -6,6 +6,7 @@ import Footer from '../components/Footer.astro';
 import TerminalPrompt from '../components/TerminalPrompt.astro';
 import AsciiBox from '../components/AsciiBox.astro';
 import PostCard from '../components/PostCard.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
 import { SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog'))
@@ -89,6 +90,7 @@ const posts = (await getCollection('blog'))
 			</div>
 		</main>
 		<Footer />
+		<LinkPreviewTooltip />
 	</body>
 </html>
 

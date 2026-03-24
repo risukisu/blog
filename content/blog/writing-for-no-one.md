@@ -22,4 +22,4 @@ See, I've been blogging -- on and off -- for some time. There still is an old bl
 And so, I tell everyone (at least everyone who would listen) they should write more online, with a hope of experiencing *the old internet*, but also because I like reading interesting stuff. In the meantime I keep blogging, writing for no one (except for maybe myself).
 
 PS You too, whoever reads this, should write more online 🩵<br>
-PPS Cheers to [Deepansh](https://deepanshkhurana.com/), who keeps inspiring me to, well, write more online ☕
+PPS Cheers to [Deepansh](https://deepanshkhurana.com/ "A very cool human being!"), who keeps inspiring me to, well, write more online ☕

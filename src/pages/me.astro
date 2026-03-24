@@ -39,6 +39,9 @@ import { SITE_TITLE } from '../consts';
 				<li><a href="https://www.linkedin.com/in/andrzej-bialas/" target="_blank">[&gt;] LinkedIn</a></li>
 				</ul>
 			</AsciiBox>
+			<div class="cursor-line">
+				<span class="blinking-cursor">█</span>
+			</div>
 		</main>
 		<Footer />
 		<LinkPreviewTooltip />
@@ -70,5 +73,16 @@ import { SITE_TITLE } from '../consts';
 		color: var(--cyan);
 		font-weight: 700;
 		text-shadow: var(--glow-cyan);
+	}
+	.cursor-line {
+		margin-top: 2em;
+	}
+	.blinking-cursor {
+		color: var(--green);
+		animation: blink 1s step-end infinite;
+	}
+	@keyframes blink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
 	}
 </style>

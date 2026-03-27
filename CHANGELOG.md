@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented here.
 
+## 2026-03-27 — dogs.txt Easter Egg
+
+### Added
+- **dogs.txt** at `/.well-known/dogs.txt` — a rebellion against the cats.txt standard, featuring Brokuł (Broccoli) the dog and risu the squirrel who thinks she's a dog
+- **Hidden paw button** — small paw print icon on every page (bottom-left, next to cookie icon, 30% opacity). Glows amber on hover. Links to dogs.txt.
+
+## 2026-03-26 — OG Image & Polish
+
+### Changed
+- Replaced default Astro OG image with custom risu squirrel design (1200x630, terminal aesthetic)
+
+### Fixed
+- Removed internal workspace files from public repo
+
+## 2026-03-24 — Writing for No One & Shared Tooltips
+
+### Published
+- **"Writing for no one"** — a post about writing without an audience
+
+### Changed
+- Extracted link preview tooltip into shared component, enabled on all pages
+- Added blinking cursor to /me page
+- Updated welcome message and blog link text
+
+### Fixed
+- Link formatting in writing-for-no-one.md
+- Memory reference path fix
+
 ## 2026-03-22 — Bilingual Posts, Link Previews, New Post Indicator
 
 ### Added

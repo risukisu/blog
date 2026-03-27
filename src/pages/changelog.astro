@@ -1,0 +1,143 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import { SITE_TITLE } from '../consts';
+
+// Read and parse CHANGELOG.md
+const changelogRaw = await import('../../CHANGELOG.md?raw');
+const lines = changelogRaw.default.split('\n');
+
+// Parse into sections
+const sections: { date: string; title: string; content: string[] }[] = [];
+let current: { date: string; title: string; content: string[] } | null = null;
+
+for (const line of lines) {
+	if (line.startsWith('## ')) {
+		if (current) sections.push(current);
+		const match = line.match(/^## (\d{4}-\d{2}-\d{2}) — (.+)$/);
+		current = {
+			date: match ? match[1] : '',
+			title: match ? match[2] : line.replace('## ', ''),
+			content: []
+		};
+	} else if (current && !line.startsWith('# ')) {
+		current.content.push(line);
+	}
+}
+if (current) sections.push(current);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Changelog — ${SITE_TITLE}`} description="what changed and when" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="git log --oneline" />
+
+			{sections.map((section, i) => (
+				<details class="changelog-entry" open={i < 3}>
+					<summary>
+						<span class="log-date">{section.date}</span>
+						<span class="log-title">{section.title}</span>
+					</summary>
+					<div class="log-content" set:html={
+						section.content.join('\n')
+							.replace(/^### (.+)$/gm, '<div class="log-heading">$1</div>')
+							.replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<div class="log-item"><span class="log-key">$1</span> <span class="log-desc">— $2</span></div>')
+							.replace(/^- \*\*(.+?)\*\*(.*)$/gm, '<div class="log-item"><span class="log-key">$1</span><span class="log-desc">$2</span></div>')
+							.replace(/^- (.+)$/gm, '<div class="log-item"><span class="log-desc">$1</span></div>')
+					} />
+				</details>
+			))}
+
+			<div class="cursor-line">
+				<span class="blinking-cursor">█</span>
+			</div>
+		</main>
+		<Footer />
+		<LinkPreviewTooltip />
+	</body>
+</html>
+
+<style>
+	.changelog-entry {
+		border: 1px solid var(--border);
+		margin-bottom: 0.5em;
+	}
+	.changelog-entry[open] {
+		border-color: var(--border-bright, var(--border));
+	}
+	summary {
+		cursor: pointer;
+		padding: 0.6em 1em;
+		display: flex;
+		gap: 1em;
+		align-items: baseline;
+		list-style: none;
+		transition: background 0.2s;
+	}
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	summary::before {
+		content: '▸';
+		color: var(--text-muted);
+		font-size: 0.8em;
+		transition: transform 0.2s;
+	}
+	details[open] > summary::before {
+		content: '▾';
+		color: var(--cyan);
+	}
+	summary:hover {
+		background: var(--bg-surface);
+	}
+	.log-date {
+		color: var(--green);
+		font-size: 0.85em;
+		white-space: nowrap;
+	}
+	.log-title {
+		color: var(--text-bright);
+		font-size: 0.9em;
+	}
+	.log-content {
+		padding: 0 1em 1em 2.2em;
+	}
+	.log-heading {
+		color: var(--amber);
+		font-weight: 700;
+		font-size: 0.85em;
+		margin-top: 0.75em;
+		margin-bottom: 0.25em;
+	}
+	.log-item {
+		font-size: 0.85em;
+		padding: 0.15em 0;
+		line-height: 1.5;
+	}
+	.log-key {
+		color: var(--cyan);
+		font-weight: 700;
+	}
+	.log-desc {
+		color: var(--text-muted);
+	}
+	.cursor-line {
+		margin-top: 2em;
+	}
+	.blinking-cursor {
+		color: var(--green);
+		animation: blink 1s step-end infinite;
+	}
+	@keyframes blink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
+	}
+</style>

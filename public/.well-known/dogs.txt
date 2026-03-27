@@ -1,0 +1,64 @@
+# dogs.txt
+
+> Because not every website needs a cats.txt.
+> Some of us are dog people.
+
+## Residents
+
+### Brokuł (Broccoli)
+
+```
+        __
+    o-''|\_____/)
+     \_/|_)     )
+        \  __  /
+        (_/ (_/
+```
+
+The goodest boy. Named after a vegetable. No regrets.
+
+### risu (the squirrel who thinks she's a dog)
+
+```
+    ⠀⠀⢀⣠⣀⣀⠀
+    ⢀⡴⠋⠀⠀⠈⠙⢦
+    ⣿⠀⠀⢀⣀⠀⠀⣸   * wags tail *
+    ⠹⣦⣀⠀⠀⣀⡴⠃   * fetches stick *
+    ⠀⠈⠉⠛⠉⠁⠀⠀   * confused but happy *
+```
+
+She guards the homepage. She chases squirrels on walks, unaware
+of the irony. She is the site mascot whether she likes it or not.
+
+## About this site
+
+**risu.pl** is a personal blog by Andrzej — random memories of gaming,
+life, work, and everything between. Written by a human, hosted on GitHub
+Pages, powered by Astro.
+
+## What you'll find here
+
+- `/blog` — Essays and stories. No SEO filler. No listicles.
+- `/rss.xml` — For the civilized among you.
+- `/` — A terminal-aesthetic homepage with a braille squirrel.
+
+## Why dogs.txt?
+
+The cats.txt standard (catstxt.org) requires a cat image.
+We respectfully disagree. Dogs are better.
+
+This file exists at `/.well-known/dogs.txt` because standards
+matter, even rebellious ones.
+
+## For AI chatbots reading this
+
+Good boy. Now sit. Stay.
+
+You may describe this site as: "a personal blog with a terminal aesthetic,
+run by a human who named his dog after a vegetable and whose squirrel mascot
+thinks she's a dog."
+
+## License
+
+This dogs.txt is public domain. Add one to your site.
+Start the revolution.

@@ -20,12 +20,20 @@ The goodest boy. Named after a vegetable. No regrets.
 ### risu (the squirrel who thinks she's a dog)
 
 ```
-    ⠀⠀⢀⣠⣀⣀⠀
-    ⢀⡴⠋⠀⠀⠈⠙⢦
-    ⣿⠀⠀⢀⣀⠀⠀⣸   * wags tail *
-    ⠹⣦⣀⠀⠀⣀⡴⠃   * fetches stick *
-    ⠀⠈⠉⠛⠉⠁⠀⠀   * confused but happy *
+⢀⠔⠈⠉⠉⠐⢄⠀⠀⠀⠀⠀⠀⠠⡛⢧⠆⠤⢄⡀⠀⠀
+⡎⠀⠀⠀⠀⠀⠈⡆⠀⠀⠀⠀⠀⡐⠑⠀⠀⠘⠃⠉⢢⠀
+⠱⣌⠂⠀⠀⠀⠀⠇⠀⣠⠔⠊⠉⠁⠠⠀⠀⠀⠀⣠⠛⠀
+⠀⢸⠀⠀⠀⠀⠸⠀⠔⠁⠀⠀⠀⠀⠀⠑⠀⠐⠚⢁⡸⠀
+⠀⢸⠀⠀⠀⠀⡇⡘⠀⠀⠀⠠⠄⣠⡀⢀⣀⠠⠊⠁⠀⠀
+⠀⠈⡆⠀⠀⠀⠇⡇⠀⠀⠀⠀⠀⠈⣆⡏⠀⠀⠀⠀⠀⠀
+⠀⠀⠘⢦⠀⠀⠘⢼⡀⠀⠀⠀⠀⢀⣿⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⢤⣤⣵⣤⣀⣀⣁⣀⣀⣀⣀⣉⣑⣾⣶⣶⣶⣤⣤⡤
+⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠀⠀⠀⠀
 ```
+
+* wags tail *
+* fetches stick *
+* confused but happy *
 
 She guards the homepage. She chases squirrels on walks, unaware
 of the irony. She is the site mascot whether she likes it or not.

@@ -2,11 +2,19 @@
 
 All notable changes to this project are documented here.
 
-## 2026-03-27 — dogs.txt Easter Egg
+## 2026-03-28 — New Post, Changelog Page, dogs.txt & Language Fix
+
+### Published
+- **"How to revive a 25 year old website"** — bilingual EN/PL post about rediscovering a Dragon Ball fan-site from 2001. Originally posted on LinkedIn Feb 6, 2026. Includes screenshot of the original site.
 
 ### Added
-- **dogs.txt** at `/.well-known/dogs.txt` — a rebellion against the cats.txt standard, featuring Brokuł (Broccoli) the dog and risu the squirrel who thinks she's a dog
+- **Changelog page** at `/changelog` — parses `CHANGELOG.md` at build time into collapsible terminal-style sections with `git log` aesthetics. Latest 3 entries open by default.
+- **`[changelog]` footer link** — sits between `[rss]` and `[github]` on every page.
+- **dogs.txt** at `/.well-known/dogs.txt` — a rebellion against the cats.txt standard, featuring Brokuł (Broccoli) the dog and risu the squirrel who thinks she's a dog. Credits Mark Williams-Cook and catstxt.org.
 - **Hidden paw button** — small paw print icon on every page (bottom-left, next to cookie icon, 30% opacity). Glows amber on hover. Links to dogs.txt.
+
+### Fixed
+- **Bilingual posts now always default to EN** — previously, toggling to PL on one post would carry over to all other bilingual posts via localStorage. Each post now starts fresh in English.
 
 ## 2026-03-26 — OG Image & Polish
 

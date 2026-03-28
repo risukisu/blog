@@ -51,9 +51,9 @@ if (current) sections.push(current);
 							.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="log-link">$1</a>')
 							.replace(/`([^`]+)`/g, '<code>$1</code>')
 							.replace(/^### (.+)$/gm, '<div class="log-heading">$1</div>')
-							.replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-key">$1</span> <span class="log-desc">— $2</span></div>')
-							.replace(/^- \*\*(.+?)\*\*(.*)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-key">$1</span><span class="log-desc">$2</span></div>')
-							.replace(/^- (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-desc">$1</span></div>')
+							.replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-text"><span class="log-key">$1</span> — $2</span></div>')
+							.replace(/^- \*\*(.+?)\*\*(.*)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-text"><span class="log-key">$1</span>$2</span></div>')
+							.replace(/^- (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-text">$1</span></div>')
 					} />
 				</details>
 			))}
@@ -128,25 +128,23 @@ if (current) sections.push(current);
 	.log-content :global(.log-item) {
 		font-size: 0.85em;
 		padding: 0.5em 0;
-		line-height: 1.5;
-		display: flex;
-		gap: 0.6em;
-		align-items: baseline;
+		line-height: 1.6;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 	}
 	.log-content :global(.log-item:last-child) {
 		border-bottom: none;
 	}
 	.log-content :global(.log-bullet) {
-		flex-shrink: 0;
+		margin-right: 0.5em;
 		font-size: 0.6em;
+		vertical-align: middle;
+	}
+	.log-content :global(.log-text) {
+		color: var(--text-muted);
 	}
 	.log-content :global(.log-key) {
 		color: var(--cyan);
 		font-weight: 700;
-	}
-	.log-content :global(.log-desc) {
-		color: var(--text-muted);
 	}
 	.log-content :global(.log-link) {
 		color: var(--cyan);

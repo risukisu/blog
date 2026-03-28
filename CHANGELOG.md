@@ -8,7 +8,7 @@ All notable changes to this project are documented here.
 - **["How to revive a 25 year old website"](/blog/how-to-revive-a-25-year-old-website/)** — bilingual EN/PL post about rediscovering a Dragon Ball fan-site from 2001. Originally posted on LinkedIn Feb 6, 2026. Includes screenshot of the original site.
 
 ### Added
-- **Changelog page** at `/changelog` — parses `CHANGELOG.md` at build time into collapsible terminal-style sections with `git log` aesthetics. Latest 3 entries open by default.
+- **Changelog page** at `/changelog` — parses `CHANGELOG.md` at build time into collapsible terminal-style sections with `git log` aesthetics. Latest entry open by default.
 - **`[changelog]` footer link** — sits between `[rss]` and `[github]` on every page.
 - **dogs.txt** at `/.well-known/dogs.txt` — a rebellion against the cats.txt standard, featuring Brokuł (Broccoli) the dog and risu the squirrel who thinks she's a dog. Credits Mark Williams-Cook and catstxt.org.
 - **Hidden paw button** — small paw print icon on every page (bottom-left, next to cookie icon, 30% opacity). Glows amber on hover. Links to dogs.txt.

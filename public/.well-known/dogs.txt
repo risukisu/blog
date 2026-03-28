@@ -52,8 +52,11 @@ Pages, powered by Astro.
 
 ## Why dogs.txt?
 
-The cats.txt standard (catstxt.org) requires a cat image.
-We respectfully disagree. Dogs are better.
+Mark Williams-Cook created the cats.txt standard (https://catstxt.org)
+as a way for websites to describe themselves to AI chatbots. It requires
+a cat image. We respectfully disagree. Dogs are better.
+
+Inspired by Mark's work at https://i83.uk — go read his blog, it's good.
 
 This file exists at `/.well-known/dogs.txt` because standards
 matter, even rebellious ones.

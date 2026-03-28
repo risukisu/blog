@@ -24,13 +24,16 @@ import { SITE_TITLE } from '../consts';
 					<p class="project-desc">
 						Single-file GA4 traffic analyzer — drop CSV exports, get an interactive dashboard. No install, no server, no dependencies.
 					</p>
-					<div class="project-features">
-						<span class="feature-label">&gt; </span>YoY traffic comparison with 8-week moving average<br/>
-						<span class="feature-label">&gt; </span>Google algorithm impact analysis (Core Updates + AI Overviews)<br/>
-						<span class="feature-label">&gt; </span>Auto-generated key insights, winners &amp; losers<br/>
-						<span class="feature-label">&gt; </span>Top 25 pages table with trend arrows and engagement data<br/>
-						<span class="feature-label">&gt; </span>Works offline, works with file:// — just open and drop CSVs
-					</div>
+					<details class="project-features">
+						<summary class="features-toggle">[features]</summary>
+						<div class="features-list">
+							<span class="feature-label">&gt; </span>YoY traffic comparison with 8-week moving average<br/>
+							<span class="feature-label">&gt; </span>Google algorithm impact analysis (Core Updates + AI Overviews)<br/>
+							<span class="feature-label">&gt; </span>Auto-generated key insights, winners &amp; losers<br/>
+							<span class="feature-label">&gt; </span>Top 25 pages table with trend arrows and engagement data<br/>
+							<span class="feature-label">&gt; </span>Works offline, works with file:// — just open and drop CSVs
+						</div>
+					</details>
 					<div class="project-tags">
 						<span class="tag">[html]</span>
 						<span class="tag">[chart.js]</span>
@@ -42,10 +45,6 @@ import { SITE_TITLE } from '../consts';
 						<a href="https://github.com/risukisu/ga4-analyzer-lite" target="_blank" class="project-link">
 							<span class="link-glyph">[github]</span>
 							<span class="link-text">risukisu/ga4-analyzer-lite</span>
-						</a>
-						<a href="https://github.com/risukisu/ga4-analyzer" target="_blank" class="project-link">
-							<span class="link-glyph">[related]</span>
-							<span class="link-text">full version (Node.js)</span>
 						</a>
 					</div>
 				</div>
@@ -75,6 +74,29 @@ import { SITE_TITLE } from '../consts';
 	.project-features {
 		color: var(--text-muted);
 		font-size: 0.85em;
+	}
+	.features-toggle {
+		cursor: pointer;
+		color: var(--cyan);
+		font-weight: 700;
+		list-style: none;
+		transition: text-shadow 0.2s;
+	}
+	.features-toggle::-webkit-details-marker {
+		display: none;
+	}
+	.features-toggle::before {
+		content: '▸ ';
+		color: var(--cyan);
+	}
+	.project-features[open] .features-toggle::before {
+		content: '▾ ';
+	}
+	.features-toggle:hover {
+		text-shadow: var(--glow-cyan);
+	}
+	.features-list {
+		margin-top: 0.5em;
 		line-height: 1.8;
 	}
 	.feature-label {

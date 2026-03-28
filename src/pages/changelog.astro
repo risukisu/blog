@@ -49,9 +49,9 @@ if (current) sections.push(current);
 					<div class="log-content" set:html={
 						section.content.join('\n')
 							.replace(/^### (.+)$/gm, '<div class="log-heading">$1</div>')
-							.replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<div class="log-item"><span class="log-bullet">▸</span><span class="log-key">$1</span> <span class="log-desc">— $2</span></div>')
-							.replace(/^- \*\*(.+?)\*\*(.*)$/gm, '<div class="log-item"><span class="log-bullet">▸</span><span class="log-key">$1</span><span class="log-desc">$2</span></div>')
-							.replace(/^- (.+)$/gm, '<div class="log-item"><span class="log-bullet">▸</span><span class="log-desc">$1</span></div>')
+							.replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-key">$1</span> <span class="log-desc">— $2</span></div>')
+							.replace(/^- \*\*(.+?)\*\*(.*)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-key">$1</span><span class="log-desc">$2</span></div>')
+							.replace(/^- (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-desc">$1</span></div>')
 					} />
 				</details>
 			))}
@@ -119,19 +119,19 @@ if (current) sections.push(current);
 	}
 	.log-item {
 		font-size: 0.85em;
-		padding: 0.3em 0;
+		padding: 0.5em 0;
 		line-height: 1.5;
 		display: flex;
-		gap: 0.5em;
+		gap: 0.6em;
 		align-items: baseline;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 	}
 	.log-item:last-child {
 		border-bottom: none;
 	}
 	.log-bullet {
-		color: var(--amber);
 		flex-shrink: 0;
+		font-size: 0.6em;
 	}
 	.log-key {
 		color: var(--cyan);

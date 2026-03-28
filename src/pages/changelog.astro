@@ -48,6 +48,8 @@ if (current) sections.push(current);
 					</summary>
 					<div class="log-content" set:html={
 						section.content.join('\n')
+							.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="log-link">$1</a>')
+							.replace(/`([^`]+)`/g, '<code>$1</code>')
 							.replace(/^### (.+)$/gm, '<div class="log-heading">$1</div>')
 							.replace(/^- \*\*(.+?)\*\* — (.+)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-key">$1</span> <span class="log-desc">— $2</span></div>')
 							.replace(/^- \*\*(.+?)\*\*(.*)$/gm, '<div class="log-item"><span class="log-bullet">✦︎</span><span class="log-key">$1</span><span class="log-desc">$2</span></div>')
@@ -110,7 +112,7 @@ if (current) sections.push(current);
 	.log-content {
 		padding: 0 1em 1em 2.2em;
 	}
-	.log-heading {
+	.log-content :global(.log-heading) {
 		color: var(--amber);
 		font-weight: 700;
 		font-size: 0.9em;
@@ -120,10 +122,10 @@ if (current) sections.push(current);
 		border-bottom: 1px solid var(--amber);
 		opacity: 0.9;
 	}
-	.log-heading:first-child {
+	.log-content :global(.log-heading:first-child) {
 		margin-top: 0.25em;
 	}
-	.log-item {
+	.log-content :global(.log-item) {
 		font-size: 0.85em;
 		padding: 0.5em 0;
 		line-height: 1.5;
@@ -132,19 +134,31 @@ if (current) sections.push(current);
 		align-items: baseline;
 		border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 	}
-	.log-item:last-child {
+	.log-content :global(.log-item:last-child) {
 		border-bottom: none;
 	}
-	.log-bullet {
+	.log-content :global(.log-bullet) {
 		flex-shrink: 0;
 		font-size: 0.6em;
 	}
-	.log-key {
+	.log-content :global(.log-key) {
 		color: var(--cyan);
 		font-weight: 700;
 	}
-	.log-desc {
+	.log-content :global(.log-desc) {
 		color: var(--text-muted);
+	}
+	.log-content :global(.log-link) {
+		color: var(--cyan);
+		text-decoration: none;
+		transition: text-shadow 0.2s;
+	}
+	.log-content :global(.log-link:hover) {
+		text-shadow: var(--glow-cyan);
+	}
+	.log-content :global(code) {
+		color: var(--text-bright);
+		font-size: 0.95em;
 	}
 	.cursor-line {
 		margin-top: 2em;

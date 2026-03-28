@@ -5,7 +5,7 @@ All notable changes to this project are documented here.
 ## 2026-03-28 — New Post, Changelog Page, dogs.txt & Language Fix
 
 ### Published
-- **"How to revive a 25 year old website"** — bilingual EN/PL post about rediscovering a Dragon Ball fan-site from 2001. Originally posted on LinkedIn Feb 6, 2026. Includes screenshot of the original site.
+- **["How to revive a 25 year old website"](/blog/how-to-revive-a-25-year-old-website/)** — bilingual EN/PL post about rediscovering a Dragon Ball fan-site from 2001. Originally posted on LinkedIn Feb 6, 2026. Includes screenshot of the original site.
 
 ### Added
 - **Changelog page** at `/changelog` — parses `CHANGELOG.md` at build time into collapsible terminal-style sections with `git log` aesthetics. Latest 3 entries open by default.
@@ -27,7 +27,7 @@ All notable changes to this project are documented here.
 ## 2026-03-24 — Writing for No One & Shared Tooltips
 
 ### Published
-- **"Writing for no one"** — a post about writing without an audience
+- **["Writing for no one"](/blog/writing-for-no-one/)** — a post about writing without an audience
 
 ### Changed
 - Extracted link preview tooltip into shared component, enabled on all pages
@@ -49,7 +49,7 @@ All notable changes to this project are documented here.
 - **Rehype plugin** (`src/plugins/rehype-links.js`) — build-time link enhancement: external link handling + title-to-data-preview transformation.
 
 ### Published
-- **"Gambleriada and the story of a mug"** — first bilingual post (EN/PL). Originally written Dec 19, 2013. A memory from Gambleriada 1998 about a mug, a book, an autograph and a security guard.
+- **["Gambleriada and the story of a mug"](/blog/gambleriada/)** — first bilingual post (EN/PL). Originally written Dec 19, 2013. A memory from Gambleriada 1998 about a mug, a book, an autograph and a security guard.
 
 ## 2026-03-21 — Content Restructure & Drafts
 
@@ -60,9 +60,9 @@ All notable changes to this project are documented here.
 ## 2026-03-05 — Three Blog Posts & Polish
 
 ### Added
-- **"The 4. Why the Mountain sometimes fights with the Mist"** — leadership/work post with a 2x2 alignment matrix (Mountain, River, Glacier, Mist)
-- **"Random messages"** — career/work post
-- **"Nostalgia is a hell of a drug"** — gaming/life post (originally Sep 2024)
+- **["The 4. Why the Mountain sometimes fights with the Mist"](/blog/the-four/)** — leadership/work post with a 2x2 alignment matrix (Mountain, River, Glacier, Mist)
+- **["Random messages"](/blog/random-messages/)** — career/work post
+- **["Nostalgia is a hell of a drug"](/blog/nostalgia-is-a-hell-of-a-drug/)** — gaming/life post (originally Sep 2024)
 
 ### Changed
 - Widened blog post content area from 720px to 800px

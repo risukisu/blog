@@ -42,7 +42,7 @@ All notable changes to this project are documented here.
 
 ### Added
 - **Language toggle (EN/PL)** — bilingual blog posts with seamless in-page switching. Amber `[EN | PL]` toggle in the post metadata area. Active language is bright, inactive is muted. Preference saved to localStorage and persists across posts and visits. Title, date, and body content all swap on toggle.
-- **Bilingual content model** — single `.mdx` file per bilingual post with `<div data-lang="en">` / `<div data-lang="pl">` blocks. New frontmatter fields: `bilingual`, `titlePl`, `descriptionPl`.
+- **Bilingual content model** — single `.mdx` file per bilingual post with language-toggled content blocks. New frontmatter fields: `bilingual`, `titlePl`, `descriptionPl`.
 - **`[EN|PL]` badge on blog index** — amber indicator next to post titles for bilingual posts, so readers know before clicking.
 - **Link preview tooltips** — hover over any link with a title attribute to see an amber-bordered tooltip with a preview snippet and domain name. Rehype plugin transforms links at build time. External links automatically open in new tabs. JS-disabled fallback shows native browser tooltip.
 - **New post indicator** — returning visitors see a blinking green `new` badge next to posts they haven't seen before. Uses localStorage slug tracking with session rotation (badges persist for the session, clear on next visit). First-time visitors see no badges. Works for republished old content too (slug-based, not date-based).
@@ -85,20 +85,13 @@ All notable changes to this project are documented here.
 - **Projects** nav item in header between Blog and Me
 - **LinkedIn** link on the Me page
 - **GA4 tracking** (Measurement ID: G-TN2YY0219L), gated behind cookie consent
-- **GDPR cookie consent system:**
-  - Full-width banner on first visit with [accept] / [decline]
-  - Persistent cookie icon (bottom-left, amber) on every page
-  - Click icon to open preferences panel — view status, change consent anytime
-  - GA4 only loads after explicit user consent
-  - Green glow on accept hover, magenta glow on decline hover
+- **GDPR cookie consent system** — full-width banner on first visit, persistent cookie icon (bottom-left, amber) on every page, preferences panel to view/change consent, GA4 only loads after explicit consent
 
 ## 2026-02-27 — Custom Domain & Feature Work
 
 ### Added
 - Custom domain `risu.pl` — CNAME file, DNS A records on OVH pointing to GitHub Pages
 - Theme toggle easter egg rework: click 1 shows warning, clicks 2-4 show countdown, click 5 switches to light mode with confirmation message, all messages persist 3 seconds
-- `WRITING.md` — guide for writing and publishing blog posts
-- Blog post template at `src/content/blog-template.md`
 
 ### Changed
 - Updated `astro.config.mjs` site URL to `https://risu.pl`
@@ -136,7 +129,5 @@ All notable changes to this project are documented here.
 - GitHub Pages hosting at `risukisu.github.io/blog`
 - GitHub Actions workflow for auto-deploy on push to main
 - Markdown/MDX content collections for blog posts
-- Session management skills (`/save`, `/resume`, `/wip`, `/sync`)
-- Memory system (`memory/sessions/`, `memory/shared/`)
 - RSS feed and sitemap support
 - SEO with canonical URLs and OpenGraph data

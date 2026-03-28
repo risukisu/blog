@@ -41,7 +41,7 @@ if (current) sections.push(current);
 			<TerminalPrompt command="git log --oneline" />
 
 			{sections.map((section, i) => (
-				<details class="changelog-entry" open={i < 3}>
+				<details class="changelog-entry" open={i < 1}>
 					<summary>
 						<span class="log-date">{section.date}</span>
 						<span class="log-title">{section.title}</span>

@@ -21,7 +21,6 @@ const { context = { type: 'generic' } } = Astro.props;
   <div class="terminal-line terminal-input">
     <span class="terminal-prompt">&gt; </span><span class="terminal-text" data-input-display></span><span class="blinking-cursor"> █</span>
   </div>
-  <input type="text" class="terminal-hidden-input" data-terminal-input autocomplete="off" spellcheck="false" aria-label="Terminal input" />
 </div>
 
 <script is:inline>
@@ -38,8 +37,8 @@ const { context = { type: 'generic' } } = Astro.props;
   if (!terminal) return;
 
   var ctx = JSON.parse(terminal.dataset.context || '{}');
-  var hiddenInput = terminal.querySelector('[data-terminal-input]');
   var inputDisplay = terminal.querySelector('[data-input-display]');
+  var inputBuffer = '';
   var line0 = terminal.querySelector('[data-line="0"]');
   var line1 = terminal.querySelector('[data-line="1"]');
   var fadeTimer = null;
@@ -201,42 +200,36 @@ const { context = { type: 'generic' } } = Astro.props;
     }
   }
 
-  // Sync hidden input to display
-  hiddenInput.addEventListener('input', function() {
-    inputDisplay.textContent = hiddenInput.value;
-  });
+  function updateDisplay() {
+    inputDisplay.textContent = inputBuffer;
+  }
 
-  // Handle enter
-  hiddenInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-      var val = hiddenInput.value;
-      hiddenInput.value = '';
-      inputDisplay.textContent = '';
-      handleCommand(val);
-    } else if (e.key === 'Escape') {
-      hiddenInput.value = '';
-      inputDisplay.textContent = '';
-      hiddenInput.blur();
-    }
-  });
-
-  // Global keydown — capture bare keys, focus the hidden input
+  // Global keydown — direct buffer management, no hidden input
   document.addEventListener('keydown', function(e) {
     // Don't capture if focused on a real form element
     var tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
-    if (tag === 'input' && document.activeElement !== hiddenInput) return;
-    if (tag === 'textarea' || tag === 'select') return;
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
     if (document.activeElement && document.activeElement.isContentEditable) return;
 
-    // Don't capture modifier combos
+    // Don't capture modifier combos (except shift for capitals)
     if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-    // Don't capture function keys, tab, etc.
-    if (e.key.length > 1 && e.key !== 'Backspace' && e.key !== 'Enter' && e.key !== 'Escape') return;
-
-    // Focus the hidden input and let it handle the key
-    if (document.activeElement !== hiddenInput) {
-      hiddenInput.focus();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      var val = inputBuffer;
+      inputBuffer = '';
+      updateDisplay();
+      handleCommand(val);
+    } else if (e.key === 'Escape') {
+      inputBuffer = '';
+      updateDisplay();
+    } else if (e.key === 'Backspace') {
+      e.preventDefault();
+      inputBuffer = inputBuffer.slice(0, -1);
+      updateDisplay();
+    } else if (e.key.length === 1) {
+      inputBuffer += e.key;
+      updateDisplay();
     }
   });
 })();
@@ -275,14 +268,5 @@ const { context = { type: 'generic' } } = Astro.props;
   .blinking-cursor {
     color: var(--green);
     animation: blink 1s step-end infinite;
-  }
-  .terminal-hidden-input {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-    padding: 0;
-    border: 0;
-    pointer-events: none;
   }
 </style>

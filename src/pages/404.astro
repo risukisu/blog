@@ -29,6 +29,15 @@ const terminalItems = posts.map(p => ({
 	<body>
 		<Header />
 		<main>
+			<pre class="ascii-404">{
+`██╗  ██╗ ██████╗ ██╗  ██╗
+██║  ██║██╔═████╗██║  ██║
+███████║██║██╔██║███████║
+╚════██║████╔╝██║╚════██║
+     ██║╚██████╔╝     ██║
+     ╚═╝ ╚═════╝      ╚═╝`
+}</pre>
+
 			<TerminalPrompt command="cat page.md" />
 
 			<div class="crash">
@@ -39,7 +48,7 @@ const terminalItems = posts.map(p => ({
 
 			<div class="crash-actions">
 				<a href="/" class="crash-link retry">[retry]</a>
-				<a href="https://grugbrained.substack.com/subscribe" target="_blank" class="crash-link subscribe">[subscribe to grugbrained]</a>
+				<a href="https://grugbrained.substack.com/subscribe" target="_blank" class="crash-link subscribe">[subscribe to my substack]</a>
 			</div>
 
 			<AsciiDivider variant="dots" />
@@ -68,6 +77,16 @@ const terminalItems = posts.map(p => ({
 </html>
 
 <style>
+	.ascii-404 {
+		color: var(--magenta);
+		font-size: 0.45em;
+		line-height: 1.15;
+		background: none !important;
+		border: none !important;
+		padding: 0 !important;
+		margin: 0 0 1.5em;
+		opacity: 0.7;
+	}
 	.crash {
 		margin: 1em 0 1.5em;
 	}

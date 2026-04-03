@@ -2,6 +2,19 @@
 
 All notable changes to this project are documented here.
 
+## 2026-04-03 — Interactive Terminal, Easter Eggs & SEO
+
+### Added
+- **Interactive terminal shell** — the blinking cursor on every page is now a real terminal. Just start typing. Commands: `help`, `ls`, `cd`, `cat`, `whoami`, `history`, `clear`, `crt`, `exit`. Context-aware — `ls` shows posts on /blog, projects on /projects, nav links elsewhere. 3-line scroll buffer that fades after inactivity.
+- **Custom 404 page** — lite terminal crash with `[ERR] segfault at 0xDEADBEEF`, recovery message, `[subscribe to grugbrained]` Substack CTA, and 3 recent posts for lost visitors.
+- **CRT scanline mode** — toggleable CRT monitor effect (scanlines + vignette). Activate by double-clicking the `>_` logo or typing `crt` in the terminal. Persists via localStorage.
+- **RPG robots.txt** — dungeon master addresses crawler bots. "You have entered the dungeon. Crawl wisely, bot." Fully functional directives underneath.
+- **View-source ASCII art** — hidden HTML comment on the homepage with a cat face and credits. Only visible to the curious.
+- **JSON-LD structured data** — `BlogPosting` schema on all blog posts for search engine rich results.
+
+### Changed
+- **Substack link on /me** — now points to [grugbrained.substack.com](https://grugbrained.substack.com) instead of generic substack.com.
+
 ## 2026-03-28 — New Post, Changelog Page, dogs.txt & Language Fix
 
 ### Published

@@ -1,0 +1,104 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AsciiBox from '../components/AsciiBox.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Acknowledgements — ${SITE_TITLE}`} description="credits and attributions" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat CREDITS" />
+
+			<AsciiBox title="acknowledgements">
+				<p class="intro">
+					This site is built with open-source tools and community-created assets.
+				</p>
+
+				<div class="credits">
+					<div class="credit">
+						<span class="credit-name">Astro</span>
+						<span class="credit-desc">Static site framework</span>
+						<a href="https://astro.build" target="_blank" class="credit-link">[link]</a>
+					</div>
+					<div class="credit">
+						<span class="credit-name">JetBrains Mono</span>
+						<span class="credit-desc">Monospace typeface by JetBrains</span>
+						<a href="https://www.jetbrains.com/lp/mono/" target="_blank" class="credit-link">[link]</a>
+					</div>
+					<div class="credit">
+						<span class="credit-name">SerenityOS Emoji</span>
+						<span class="credit-desc">Chipmunk favicon (BSD 2-Clause)</span>
+						<a href="https://emoji.serenityos.net" target="_blank" class="credit-link">[link]</a>
+					</div>
+					<div class="credit">
+						<span class="credit-name">GitHub Pages</span>
+						<span class="credit-desc">Hosting and deployment</span>
+						<a href="https://pages.github.com" target="_blank" class="credit-link">[link]</a>
+					</div>
+				</div>
+			</AsciiBox>
+
+			<div class="cursor-line">
+				<span class="blinking-cursor">█</span>
+			</div>
+		</main>
+		<Footer />
+		<LinkPreviewTooltip />
+	</body>
+</html>
+
+<style>
+	.intro {
+		margin: 0 0 1em;
+		color: var(--text-muted);
+	}
+	.credits {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6em;
+	}
+	.credit {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75em;
+		font-size: 0.9em;
+	}
+	.credit-name {
+		color: var(--text-bright);
+		font-weight: 700;
+		white-space: nowrap;
+	}
+	.credit-desc {
+		color: var(--text-muted);
+		font-size: 0.85em;
+	}
+	.credit-link {
+		color: var(--cyan);
+		text-decoration: none;
+		font-size: 0.85em;
+		transition: text-shadow 0.2s;
+	}
+	.credit-link:hover {
+		text-shadow: var(--glow-cyan);
+	}
+	.cursor-line {
+		margin-top: 2em;
+	}
+	.blinking-cursor {
+		color: var(--green);
+		animation: blink 1s step-end infinite;
+	}
+	@keyframes blink {
+		0%, 100% { opacity: 1; }
+		50% { opacity: 0; }
+	}
+</style>

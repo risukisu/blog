@@ -330,6 +330,9 @@ const { title, description, image = FallbackImage } = Astro.props;
 		if (theme === 'light') {
 			document.documentElement.classList.add('light');
 		}
+		if (localStorage.getItem('crt') === 'on') {
+			document.documentElement.classList.add('crt');
+		}
 	})();
 </script>
 

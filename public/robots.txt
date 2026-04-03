@@ -1,0 +1,19 @@
+# ═══════════════════════════════════════
+#  DUNGEON ENTRANCE — risu.pl
+# ═══════════════════════════════════════
+#
+# You have entered the dungeon.
+# Crawl wisely, bot. These halls are open,
+# but the treasure is for humans.
+#
+# The squirrel watches. Always.
+#
+
+User-agent: *
+Allow: /
+
+# The void returns nothing. Do not seek it.
+Disallow: /dev/null
+
+# Map of the realm
+Sitemap: https://risu.pl/sitemap-index.xml

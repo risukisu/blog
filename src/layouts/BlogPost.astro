@@ -8,6 +8,7 @@ import FormattedDate from '../components/FormattedDate.astro';
 import AsciiBox from '../components/AsciiBox.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
 import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
 
 type Props = CollectionEntry<'blog'>['data'] & {
 	bilingual?: boolean;
@@ -31,6 +32,25 @@ const {
 <html lang="en">
 	<head>
 		<BaseHead title={title} description={description} />
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@type": "BlogPosting",
+			"headline": title,
+			"description": description,
+			"datePublished": pubDate.toISOString(),
+			"dateModified": (updatedDate || pubDate).toISOString(),
+			"author": {
+				"@type": "Person",
+				"name": "risu",
+				"url": "https://risu.pl/me"
+			},
+			"publisher": {
+				"@type": "Person",
+				"name": "risu",
+				"url": "https://risu.pl"
+			},
+			"mainEntityOfPage": `https://risu.pl${Astro.url.pathname}`
+		})} />
 	</head>
 
 	<body>
@@ -87,6 +107,7 @@ const {
 
 				<AsciiDivider variant="eof" />
 			</article>
+			<Terminal />
 		</main>
 		<Footer />
 

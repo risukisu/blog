@@ -5,7 +5,7 @@ import ThemeToggle from './ThemeToggle.astro';
 
 <header>
 	<nav>
-		<a href="/" class="logo" aria-label="Home">&gt;_</a>
+		<a href="/" class="logo" aria-label="Home" data-logo>&gt;_</a>
 		<div class="nav-links">
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/projects">Projects</HeaderLink>
@@ -47,3 +47,16 @@ import ThemeToggle from './ThemeToggle.astro';
 		margin-left: 1em;
 	}
 </style>
+
+<script is:inline>
+(function() {
+	var logo = document.querySelector('[data-logo]');
+	if (!logo) return;
+	logo.addEventListener('dblclick', function(e) {
+		e.preventDefault();
+		var html = document.documentElement;
+		var isOn = html.classList.toggle('crt');
+		localStorage.setItem('crt', isOn ? 'on' : 'off');
+	});
+})();
+</script>

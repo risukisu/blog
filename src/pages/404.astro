@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AsciiDivider from '../components/AsciiDivider.astro';
+import PostCard from '../components/PostCard.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
+import { SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog'))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
+
+const terminalItems = posts.map(p => ({
+	slug: p.id,
+	title: p.data.title,
+	description: p.data.description
+}));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`404 — ${SITE_TITLE}`} description="page not found" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat page.md" />
+
+			<div class="crash">
+				<p class="crash-err"><span class="err-tag">[ERR]</span> segfault at 0xDEADBEEF</p>
+				<p class="crash-msg">&gt; page not found. it was probably never here.</p>
+				<p class="crash-msg">&gt; but you are. so that's something.</p>
+			</div>
+
+			<div class="crash-actions">
+				<a href="/" class="crash-link retry">[retry]</a>
+				<a href="https://grugbrained.substack.com/subscribe" target="_blank" class="crash-link subscribe">[subscribe to grugbrained]</a>
+			</div>
+
+			<AsciiDivider variant="dots" />
+
+			<p class="recent-label">&gt; recovering... found {posts.length} recent signals</p>
+
+			{posts.map((post, i) => (
+				<>
+					<PostCard
+						title={post.data.title}
+						date={post.data.pubDate}
+						description={post.data.description}
+						tags={post.data.tags}
+						href={`/blog/${post.id}/`}
+						variant="compact"
+					/>
+					{i < posts.length - 1 && <AsciiDivider variant="dots" />}
+				</>
+			))}
+
+			<Terminal context={{ type: 'blog', items: terminalItems }} />
+		</main>
+		<Footer />
+		<LinkPreviewTooltip />
+	</body>
+</html>
+
+<style>
+	.crash {
+		margin: 1em 0 1.5em;
+	}
+	.crash-err {
+		margin: 0 0 0.5em;
+		font-size: 0.9em;
+	}
+	.err-tag {
+		color: var(--magenta);
+		font-weight: 700;
+	}
+	.crash-msg {
+		color: var(--text-muted);
+		margin: 0.2em 0;
+		font-size: 0.9em;
+	}
+	.crash-actions {
+		display: flex;
+		gap: 2em;
+		margin-bottom: 2em;
+		font-size: 0.9em;
+	}
+	.crash-link {
+		text-decoration: none;
+		font-weight: 700;
+		transition: text-shadow 0.2s;
+	}
+	.crash-link.retry {
+		color: var(--cyan);
+	}
+	.crash-link.retry:hover {
+		text-shadow: var(--glow-cyan);
+	}
+	.crash-link.subscribe {
+		color: var(--amber);
+	}
+	.crash-link.subscribe:hover {
+		text-shadow: var(--glow-amber);
+	}
+	.recent-label {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		margin-bottom: 1em;
+	}
+</style>

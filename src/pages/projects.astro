@@ -6,7 +6,13 @@ import TerminalPrompt from '../components/TerminalPrompt.astro';
 import AsciiBox from '../components/AsciiBox.astro';
 import AsciiDivider from '../components/AsciiDivider.astro';
 import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
 import { SITE_TITLE } from '../consts';
+
+const terminalItems = [
+	{ slug: 'vanilla-stats', title: 'vanilla-stats', description: 'Single-file GA4 traffic analyzer' },
+	{ slug: 'skillcraft', title: 'skillcraft', description: 'Marketing skills marketplace for Claude Code' }
+];
 ---
 
 <!doctype html>
@@ -71,9 +77,7 @@ import { SITE_TITLE } from '../consts';
 				</div>
 			</AsciiBox>
 
-			<div class="cursor-line">
-				<span class="blinking-cursor">█</span>
-			</div>
+			<Terminal context={{ type: 'projects', items: terminalItems }} />
 		</main>
 		<Footer />
 		<LinkPreviewTooltip />
@@ -162,16 +166,5 @@ import { SITE_TITLE } from '../consts';
 		color: var(--text-muted);
 		font-size: 0.85em;
 		transition: color 0.2s;
-	}
-	.cursor-line {
-		margin-top: 2em;
-	}
-	.blinking-cursor {
-		color: var(--green);
-		animation: blink 1s step-end infinite;
-	}
-	@keyframes blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
 	}
 </style>

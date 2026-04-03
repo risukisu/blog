@@ -7,11 +7,18 @@ import TerminalPrompt from '../components/TerminalPrompt.astro';
 import AsciiBox from '../components/AsciiBox.astro';
 import PostCard from '../components/PostCard.astro';
 import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
 import { SITE_TITLE } from '../consts';
 
 const posts = (await getCollection('blog'))
 	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
 	.slice(0, 3);
+
+const terminalItems = posts.map(p => ({
+	slug: p.id,
+	title: p.data.title,
+	description: p.data.description
+}));
 ---
 
 <!doctype html>
@@ -19,6 +26,19 @@ const posts = (await getCollection('blog'))
 	<head>
 		<BaseHead title={SITE_TITLE} description="risu's corner of the internet" />
 	</head>
+	<!--
+	  ╔═══════════════════════════════════════╗
+	  ║  you found the source. nice.          ║
+	  ║                                       ║
+	  ║       /\_/\      risu.pl              ║
+	  ║      ( o.o )     random memories      ║
+	  ║       > ^ <      est. 2024            ║
+	  ║                                       ║
+	  ║  built with mass amounts of claude    ║
+	  ║  code, mass amounts of coffee,        ║
+	  ║  and mass amounts of mass amounts     ║
+	  ╚═══════════════════════════════════════╝
+	-->
 	<body>
 		<Header />
 		<main>
@@ -85,9 +105,7 @@ const posts = (await getCollection('blog'))
 				</div>
 			</AsciiBox>
 
-			<div class="cursor-line">
-				<span class="blinking-cursor">█</span>
-			</div>
+			<Terminal context={{ type: 'blog', items: terminalItems }} />
 		</main>
 		<Footer />
 		<LinkPreviewTooltip />
@@ -161,16 +179,5 @@ const posts = (await getCollection('blog'))
 		color: var(--text-muted);
 		font-size: 0.85em;
 		transition: color 0.2s;
-	}
-	.cursor-line {
-		margin-top: 2em;
-	}
-	.blinking-cursor {
-		color: var(--green);
-		animation: blink 1s step-end infinite;
-	}
-	@keyframes blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
 	}
 </style>

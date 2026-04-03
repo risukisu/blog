@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import TerminalPrompt from '../components/TerminalPrompt.astro';
 import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
 import { SITE_TITLE } from '../consts';
 
 // Read and parse CHANGELOG.md
@@ -58,9 +59,7 @@ if (current) sections.push(current);
 				</details>
 			))}
 
-			<div class="cursor-line">
-				<span class="blinking-cursor">█</span>
-			</div>
+			<Terminal />
 		</main>
 		<Footer />
 		<LinkPreviewTooltip />
@@ -156,16 +155,5 @@ if (current) sections.push(current);
 	.log-content :global(code) {
 		color: var(--text-bright);
 		font-size: 0.95em;
-	}
-	.cursor-line {
-		margin-top: 2em;
-	}
-	.blinking-cursor {
-		color: var(--green);
-		animation: blink 1s step-end infinite;
-	}
-	@keyframes blink {
-		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
 	}
 </style>

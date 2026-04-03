@@ -1,0 +1,288 @@
+---
+interface TerminalItem {
+  slug: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  context?: {
+    type: 'blog' | 'projects' | 'generic';
+    items?: TerminalItem[];
+  };
+}
+
+const { context = { type: 'generic' } } = Astro.props;
+---
+
+<div class="terminal" data-terminal data-context={JSON.stringify(context)}>
+  <div class="terminal-line terminal-output" data-line="0"></div>
+  <div class="terminal-line terminal-output" data-line="1"></div>
+  <div class="terminal-line terminal-input">
+    <span class="terminal-prompt">&gt; </span><span class="terminal-text" data-input-display></span><span class="blinking-cursor">█</span>
+  </div>
+  <input type="text" class="terminal-hidden-input" data-terminal-input autocomplete="off" spellcheck="false" aria-label="Terminal input" />
+</div>
+
+<script is:inline>
+(function() {
+  // Track navigation history
+  var histKey = 'risu_nav_history';
+  var hist = JSON.parse(sessionStorage.getItem(histKey) || '[]');
+  if (hist[hist.length - 1] !== location.pathname) {
+    hist.push(location.pathname);
+    sessionStorage.setItem(histKey, JSON.stringify(hist));
+  }
+
+  var terminal = document.querySelector('[data-terminal]');
+  if (!terminal) return;
+
+  var ctx = JSON.parse(terminal.dataset.context || '{}');
+  var hiddenInput = terminal.querySelector('[data-terminal-input]');
+  var inputDisplay = terminal.querySelector('[data-input-display]');
+  var line0 = terminal.querySelector('[data-line="0"]');
+  var line1 = terminal.querySelector('[data-line="1"]');
+  var fadeTimer = null;
+
+  var NAV_LINKS = [
+    { slug: '/blog', title: 'blog', description: 'random memories' },
+    { slug: '/projects', title: 'projects', description: 'open-source tools and experiments' },
+    { slug: '/me', title: 'me', description: 'about risu' },
+    { slug: '/changelog', title: 'changelog', description: 'what changed and when' },
+    { slug: '/credits', title: 'credits', description: 'acknowledgements' }
+  ];
+
+  var COMMANDS = {
+    help: function() {
+      return ['ls cd cat whoami history clear crt exit'];
+    },
+    ls: function() {
+      var items = (ctx.items && ctx.items.length) ? ctx.items : NAV_LINKS;
+      var names = items.map(function(i) { return i.slug || i.title; });
+      // Split into lines of ~80 chars
+      var lines = [];
+      var current = '';
+      for (var i = 0; i < names.length; i++) {
+        var name = names[i].replace(/^\//, '');
+        if (current.length + name.length + 2 > 80 && current.length > 0) {
+          lines.push(current);
+          current = name;
+        } else {
+          current = current ? current + '  ' + name : name;
+        }
+      }
+      if (current) lines.push(current);
+      return lines;
+    },
+    cat: function(args) {
+      if (!args) return ['usage: cat [slug]'];
+      var items = (ctx.items && ctx.items.length) ? ctx.items : NAV_LINKS;
+      var slug = args.trim().replace(/^\//, '').toLowerCase();
+      var found = null;
+      for (var i = 0; i < items.length; i++) {
+        var s = (items[i].slug || '').replace(/^\//, '').toLowerCase();
+        var t = (items[i].title || '').toLowerCase();
+        if (s === slug || t === slug || s.indexOf(slug) !== -1) {
+          found = items[i];
+          break;
+        }
+      }
+      if (!found) return ['not found: ' + args.trim()];
+      var desc = found.description || '';
+      if (desc.length > 80) desc = desc.substring(0, 77) + '...';
+      return [found.title, desc];
+    },
+    cd: function(args) {
+      if (!args) return ['usage: cd [path]'];
+      var path = args.trim();
+      if (path.charAt(0) !== '/') path = '/' + path;
+      var valid = ['/blog', '/projects', '/me', '/changelog', '/credits', '/'];
+      for (var i = 0; i < valid.length; i++) {
+        if (valid[i] === path || valid[i] === path.replace(/\/$/, '')) {
+          setTimeout(function() { window.location.href = path; }, 150);
+          return ['navigating to ' + path + '...'];
+        }
+      }
+      return ['no such directory: ' + path];
+    },
+    whoami: function() {
+      return ['risu \u2014 random memories'];
+    },
+    history: function() {
+      var h = JSON.parse(sessionStorage.getItem(histKey) || '[]');
+      if (h.length === 0) return ['(empty)'];
+      var recent = h.slice(-5);
+      return recent;
+    },
+    clear: function() {
+      line0.textContent = '';
+      line1.textContent = '';
+      line0.classList.remove('visible');
+      line1.classList.remove('visible');
+      return [];
+    },
+    crt: function() {
+      var html = document.documentElement;
+      var isOn = html.classList.toggle('crt');
+      localStorage.setItem('crt', isOn ? 'on' : 'off');
+      return ['crt mode ' + (isOn ? 'on' : 'off')];
+    },
+    exit: function() {
+      return ["nope, you're trapped here with me"];
+    }
+  };
+
+  // Alias
+  COMMANDS['sudo rm -rf /'] = function() { return ['nice try']; };
+  COMMANDS['sudo'] = function() { return ['nice try']; };
+
+  function outputLines(lines) {
+    if (lines.length === 0) return;
+
+    clearTimeout(fadeTimer);
+    line0.classList.add('visible');
+    line1.classList.add('visible');
+
+    if (lines.length === 1) {
+      line0.textContent = line1.textContent;
+      line1.textContent = lines[0];
+    } else {
+      // Show last 2 lines
+      var show = lines.slice(-2);
+      line0.textContent = show[0] || '';
+      line1.textContent = show[1] || '';
+    }
+
+    // If more than 2 lines, scroll them through
+    if (lines.length > 2) {
+      var idx = 0;
+      var scrollInterval = setInterval(function() {
+        if (idx >= lines.length - 2) {
+          clearInterval(scrollInterval);
+          startFadeTimer();
+          return;
+        }
+        line0.textContent = lines[idx + 1] || '';
+        line1.textContent = lines[idx + 2] || '';
+        idx++;
+      }, 400);
+    } else {
+      startFadeTimer();
+    }
+  }
+
+  function startFadeTimer() {
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(function() {
+      line0.classList.remove('visible');
+      line1.classList.remove('visible');
+    }, 3000);
+  }
+
+  function handleCommand(raw) {
+    var trimmed = raw.trim().toLowerCase();
+    if (!trimmed) return;
+
+    // Check full string first (for "sudo rm -rf /")
+    if (COMMANDS[trimmed]) {
+      outputLines(COMMANDS[trimmed]());
+      return;
+    }
+
+    // Split into command + args
+    var spaceIdx = trimmed.indexOf(' ');
+    var cmd = spaceIdx === -1 ? trimmed : trimmed.substring(0, spaceIdx);
+    var args = spaceIdx === -1 ? '' : trimmed.substring(spaceIdx + 1);
+
+    if (COMMANDS[cmd]) {
+      outputLines(COMMANDS[cmd](args));
+    } else {
+      outputLines(['command not found: ' + cmd]);
+    }
+  }
+
+  // Sync hidden input to display
+  hiddenInput.addEventListener('input', function() {
+    inputDisplay.textContent = hiddenInput.value;
+  });
+
+  // Handle enter
+  hiddenInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var val = hiddenInput.value;
+      hiddenInput.value = '';
+      inputDisplay.textContent = '';
+      handleCommand(val);
+    } else if (e.key === 'Escape') {
+      hiddenInput.value = '';
+      inputDisplay.textContent = '';
+      hiddenInput.blur();
+    }
+  });
+
+  // Global keydown — capture bare keys, focus the hidden input
+  document.addEventListener('keydown', function(e) {
+    // Don't capture if focused on a real form element
+    var tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
+    if (tag === 'input' && document.activeElement !== hiddenInput) return;
+    if (tag === 'textarea' || tag === 'select') return;
+    if (document.activeElement && document.activeElement.isContentEditable) return;
+
+    // Don't capture modifier combos
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    // Don't capture function keys, tab, etc.
+    if (e.key.length > 1 && e.key !== 'Backspace' && e.key !== 'Enter' && e.key !== 'Escape') return;
+
+    // Focus the hidden input and let it handle the key
+    if (document.activeElement !== hiddenInput) {
+      hiddenInput.focus();
+    }
+  });
+})();
+</script>
+
+<style>
+  .terminal {
+    margin-top: 2em;
+    font-size: 0.85em;
+    line-height: 1.6;
+  }
+  .terminal-output {
+    color: var(--text-muted);
+    height: 1.6em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .terminal-output.visible {
+    opacity: 1;
+  }
+  .terminal-input {
+    display: flex;
+    align-items: center;
+  }
+  .terminal-prompt {
+    color: var(--green);
+    user-select: none;
+  }
+  .terminal-text {
+    color: var(--text-bright);
+    white-space: pre;
+  }
+  .blinking-cursor {
+    color: var(--green);
+    animation: blink 1s step-end infinite;
+  }
+  .terminal-hidden-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    padding: 0;
+    border: 0;
+    pointer-events: none;
+  }
+</style>

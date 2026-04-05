@@ -1,6 +1,6 @@
 # random memories
 
-[![CANDOR: copilot](https://img.shields.io/badge/%E4%B7%BC%20CANDOR-copilot-fee2e2?labelColor=fee2e2)](https://candor.md)
+![CANDOR: copilot](https://img.shields.io/badge/䷼%20CANDOR-copilot-fee2e2?labelColor=fee2e2)
 
 Personal blog by [risukisu](https://github.com/risukisu) — a dark terminal/roguelike-themed site built with Astro.
 

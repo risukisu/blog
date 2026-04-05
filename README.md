@@ -1,5 +1,7 @@
 # random memories
 
+[![CANDOR: copilot](https://img.shields.io/badge/%E4%B7%BC%20CANDOR-copilot-fee2e2?labelColor=fee2e2)](https://candor.md)
+
 Personal blog by [risukisu](https://github.com/risukisu) — a dark terminal/roguelike-themed site built with Astro.
 
 **Live at [risu.pl](http://risu.pl)**
@@ -60,3 +62,7 @@ public/
 | `/blog/[slug]` | Individual blog posts                 |
 | `/projects` | Projects showcase (coming soon)          |
 | `/me`       | About page with bio and links            |
+
+---
+
+Built with [Claude Code](https://claude.ai/code) as copilot. [CANDOR: copilot](https://candor.md) — AI writes the code, I make the decisions.

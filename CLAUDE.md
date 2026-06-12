@@ -1,75 +1,32 @@
-# Blog
+# Blog — risu.pl ("random memories")
 
-## Role
+The live personal blog at https://risu.pl. EN/PL. The site is **built and deployed** — work here is maintenance, design tweaks, and content. Not greenfield.
 
-You are the development partner for building a personal blog from scratch. This is a vibe-coding project — we're designing, building, and deploying the actual blog site. Architecture, UI, components, deployment, hosting, domain — the full stack. Content writing comes later.
+## Stack
 
----
+- Astro 5 + MDX (`astro.config.mjs`, `site: 'https://risu.pl'`)
+- Tailwind CSS 4 (via `@tailwindcss/vite`)
+- RSS at `src/pages/rss.xml.js`, sitemap via `@astrojs/sitemap`
 
-## Project Context
+## Structure
 
-- **Owner:** risukisu (GitHub)
-- **Stage:** Building the site itself
-- **Goal:** A live, deployed personal blog that looks great and is easy to maintain
+- Posts: `src/content/blog/` — collections defined in `src/content.config.ts`
+- Pages: `src/pages/` — index, blog, changelog, me, projects, acknowledgements, 404
+- Site constants: `src/consts.ts` (`SITE_TITLE = 'random memories'`)
+- Layouts/components/styles: `src/layouts/`, `src/components/`, `src/styles/`
 
----
+## Commands
 
-## Current Focus
+- `npm run dev` — local dev server
+- `npm run build` — production build (run before pushing non-trivial changes)
+- `npm run preview` — preview the build
 
-- `memory/sessions/` — Recent sessions for continuity. Run `/resume` to pick up previous work.
-- `memory/shared/` — Tech stack decisions, design direction, deployment notes
+## Deploy — pushing to main IS deploying
 
----
+GitHub Pages via `.github/workflows/deploy.yml`, triggered on every push to `main`. Custom domain `risu.pl` (`public/CNAME`). There is no staging — verify with `npm run build` locally first.
 
-## What We're Building
+## Content rules
 
-### The Site
-- Personal blog with posts, pages, and navigation
-- Clean, modern design (vibe-coded — we iterate until it feels right)
-- Fast, responsive, accessible
-
-### The Stack
-- Framework, styling, and tooling — TBD (deciding together)
-- Static site or SSR — TBD
-- Hosting and deployment — TBD (Vercel, Netlify, Cloudflare Pages, etc.)
-- Domain and DNS — TBD
-
-### The Pipeline
-- Local dev environment
-- GitHub repo for version control
-- CI/CD for automatic deploys on push
-- Content management approach (MDX, CMS, markdown files, etc.)
-
----
-
-## Skills
-
-| Command | Purpose |
-|---------|---------|
-| `/save` | Save current session state |
-| `/resume` | Resume a previous session |
-| `/wip` | Work in progress dashboard |
-| `/sync` | Push changes to GitHub |
-
----
-
-## Memory System
-
-Persistent context lives in `/memory/`:
-
-- `memory/sessions/` — Work session snapshots with index
-- `memory/shared/` — Tech stack decisions, design notes, deployment config
-- `content/drafts/` — Blog post drafts (for later)
-- `content/published/` — Published content (for later)
-
----
-
-## How We Work
-
-- Vibe-code: build fast, iterate on feel, don't over-plan
-- Ship early, improve live
-- Make decisions as we go and record them in `memory/shared/`
-- Start sessions with a greeting or `/resume`
-- Use `/wip` to check where we are
-- Use `/save` before ending a session
-- Use `/sync` to push to GitHub
+- Post voice: auto-memory `writing-voice-profile` — continuous prose, no headers, 400–800 words, anti-conclusion endings.
+- Always run `/copy-deslop` before publishing.
+- Public-facing changelog only — no internal/meta work in `changelog.astro` entries (auto-memory `feedback_changelog_public_only`).

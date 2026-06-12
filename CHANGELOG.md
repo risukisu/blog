@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 2026-06-12 — dbdale-time-capsule Joins the Projects Page
+
+### Added
+- **dbdale-time-capsule on [/projects](/projects)** — my 2001 Dragon Ball fansite, preserved file-for-file and served as a time capsule of the early Polish anime web. Links to the live site, the repo, and the ["How to revive a 25 year old website"](/blog/how-to-revive-a-25-year-old-website/) post it stars in.
+
+### Changed
+- **SkillCraft project card refreshed** — the marketplace went fully public (browse and download without an account), so the card now says so: trust-but-verify publishing, rarity driven by downloads + upvotes, and a fixed GitHub repo link.
+
 ## 2026-04-03 — Interactive Terminal, Easter Eggs & SEO
 
 ### Added

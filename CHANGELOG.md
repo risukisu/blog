@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 2026-07-20 — New Post: I'm Angry All the Time
+
+### Published
+- **["I'm Angry All the Time"](/blog/im-angry-all-the-time/)** — a micro-essay on how being angry at everything that doesn't work is the quiet engine behind what I do. With a cameo from an appropriately-furious Bruce Banner.
+
 ## 2026-06-12 — dbdale-time-capsule Joins the Projects Page
 
 ### Added

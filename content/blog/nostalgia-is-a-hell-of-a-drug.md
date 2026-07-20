@@ -1,5 +1,5 @@
 ---
-title: 'Nostalgia is a hell of a drug'
+title: 'Nostalgia Is a Hell of a Drug'
 description: 'On going back to World of Warcraft after a decade, and realizing it was never about the game.'
 pubDate: 'Sep 22 2024'
 updatedDate: 'Mar 05 2026'

@@ -1,5 +1,5 @@
 ---
-title: 'Writing for no one'
+title: 'Writing for No One'
 description: 'Why do I even bother with writing a blog when nobody reads it?'
 pubDate: 'Mar 24 2026'
 tags: ['life', 'writing']

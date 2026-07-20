@@ -1,5 +1,5 @@
 ---
-title: 'The 4. Why the Mountain sometimes fights with the Mist.'
+title: 'The 4. Why the Mountain Sometimes Fights With the Mist.'
 description: 'An alignment matrix for understanding workplace friction through four archetypes: Mountain, River, Glacier, and Mist.'
 pubDate: 'Mar 05 2026'
 tags: ['leadership', 'work']

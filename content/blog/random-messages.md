@@ -1,5 +1,5 @@
 ---
-title: 'Random messages'
+title: 'Random Messages'
 description: 'How a random LinkedIn message from a stranger changed my career and became a friendship.'
 pubDate: 'Jul 11 2025'
 tags: ['life', 'work']

@@ -26,6 +26,7 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 	<body>
 		<Header />
 		<main>
+			<h1 class="sr-only">blog — random memories</h1>
 			<TerminalPrompt command="ls -la posts/" />
 
 			<AsciiBox title="filter">

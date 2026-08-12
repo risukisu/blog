@@ -34,11 +34,12 @@ if (current) sections.push(current);
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Changelog — ${SITE_TITLE}`} description="what changed and when" />
+		<BaseHead title={`Changelog — ${SITE_TITLE}`} description="What changed on risu.pl and when — new posts, features, and easter eggs, parsed straight from the repo's changelog. Basically git log for the site." />
 	</head>
 	<body>
 		<Header />
 		<main>
+			<h1 class="sr-only">changelog — random memories</h1>
 			<TerminalPrompt command="git log --oneline" />
 
 			{sections.map((section, i) => (

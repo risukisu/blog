@@ -2,15 +2,21 @@
 interface Props {
 	title?: string;
 	class?: string;
+	// 'h1' renders the box title as the page's H1 (same look, real heading tag)
+	heading?: 'h1';
 }
 
-const { title, class: className } = Astro.props;
+const { title, class: className, heading } = Astro.props;
 ---
 
 <div class:list={["ascii-box", className]}>
 	{title ? (
 		<div class="ascii-box-top">
-			<span class="corner">╔═</span><span class="title-text"> {title} </span><span class="fill">═══════════════════════════════════════</span><span class="corner-end">╗</span>
+			<span class="corner">╔═</span>{heading === 'h1' ? (
+				<h1 class="title-text"> {title} </h1>
+			) : (
+				<span class="title-text"> {title} </span>
+			)}<span class="fill">═══════════════════════════════════════</span><span class="corner-end">╗</span>
 		</div>
 	) : (
 		<div class="ascii-box-top">
@@ -52,6 +58,9 @@ const { title, class: className } = Astro.props;
 		flex-shrink: 0;
 		color: var(--cyan);
 		font-weight: 700;
+		font-size: 1em;
+		margin: 0;
+		line-height: inherit;
 	}
 	.ascii-box-content {
 		display: flex;

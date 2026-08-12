@@ -57,12 +57,12 @@ const {
 		<Header />
 		<main>
 			<article>
-				<AsciiBox title={bilingual ? undefined : title}>
+				<AsciiBox title={bilingual ? undefined : title} heading="h1">
 					{bilingual && (
-						<div class="bilingual-title">
+						<h1 class="bilingual-title">
 							<span data-title-en class="title-variant">{title}</span>
 							<span data-title-pl class="title-variant" style="display:none;">{titlePl}</span>
-						</div>
+						</h1>
 					)}
 					<div class="post-meta">
 						<span data-date-en>
@@ -207,6 +207,8 @@ const {
 		font-weight: 700;
 		color: var(--cyan);
 		font-size: 1em;
+		margin: 0;
+		line-height: inherit;
 	}
 	.lang-toggle {
 		font-size: 0.8em;

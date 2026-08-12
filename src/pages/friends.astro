@@ -40,14 +40,14 @@ const terminalItems = friends.map((f) => ({
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Friends — ${SITE_TITLE}`} description="friends of the blog — curated links to sites I actually visit" />
+		<BaseHead title={`Friends — ${SITE_TITLE}`} description="Friends of the blog — hand-picked links to sites I actually visit, each with a hand-drawn 88×31 pixel button. Curated by a human, no algorithm involved." />
 	</head>
 	<body>
 		<Header />
 		<main>
 			<TerminalPrompt command="cat FRIENDS" />
 
-			<AsciiBox title="friends of the blog">
+			<AsciiBox title="friends of the blog" heading="h1">
 				<p class="intro">
 					Corners of the web I actually visit — curated by a human, no algorithm involved.
 					<a
@@ -96,7 +96,7 @@ const terminalItems = friends.map((f) => ({
 				</div>
 
 				<p class="want-in">
-					Got a corner of the web and we know each other? Tell me — ways to reach me are on <a href="/me">/me</a>.
+					Got a corner of the web and we know each other? Tell me — ways to reach me are on <a href="/me/">/me</a>.
 				</p>
 			</AsciiBox>
 

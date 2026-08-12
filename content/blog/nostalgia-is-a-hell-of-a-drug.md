@@ -1,6 +1,6 @@
 ---
 title: 'Nostalgia Is a Hell of a Drug'
-description: 'On going back to World of Warcraft after a decade, and realizing it was never about the game.'
+description: "On going back to World of Warcraft after a decade and realizing it was never about the game — I didn't miss Azeroth, I missed who I was back then."
 pubDate: 'Sep 22 2024'
 updatedDate: 'Mar 05 2026'
 tags: ['life', 'gaming']

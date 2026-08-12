@@ -14,14 +14,14 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Campfire — ${SITE_TITLE}`} description="the guestbook — stay awhile and share your stories" />
+		<BaseHead title={`Campfire — ${SITE_TITLE}`} description="The guestbook, old internet style — leave your name and a 140-character story by the crackling pixel campfire. No login, no tracking." />
 	</head>
 	<body>
 		<Header />
 		<main>
 			<TerminalPrompt command="cat GUESTBOOK" />
 
-			<AsciiBox title="the campfire">
+			<AsciiBox title="the campfire" heading="h1">
 				<div class="hearth">
 					<div class="campfire-sprite" role="img" aria-label="a crackling pixel-art campfire"></div>
 					<p class="greeting">

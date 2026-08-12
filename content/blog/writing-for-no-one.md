@@ -1,6 +1,6 @@
 ---
 title: 'Writing for No One'
-description: 'Why do I even bother with writing a blog when nobody reads it?'
+description: 'Why do I even bother with a blog in the algorithmic era? Because I want to remember, and to safeguard my own little shard of the old internet.'
 pubDate: 'Mar 24 2026'
 tags: ['life', 'writing']
 ---

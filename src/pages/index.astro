@@ -24,7 +24,7 @@ const terminalItems = posts.map(p => ({
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description="risu's corner of the internet" />
+		<BaseHead title={SITE_TITLE} description="risu's corner of the internet — random memories of gaming, work, and everything that doesn't fit anywhere else, plus a pixel campfire." />
 	</head>
 	<!--
 	  ╔═══════════════════════════════════════╗
@@ -42,6 +42,7 @@ const terminalItems = posts.map(p => ({
 	<body>
 		<Header />
 		<main>
+			<h1 class="sr-only">random memories — risu's corner of the internet</h1>
 			<div class="ascii-hero">
 				<pre class="mascot">{
 `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣀⣀⣀⣀⠀⠀
@@ -94,7 +95,7 @@ const terminalItems = posts.map(p => ({
 
 			<AsciiBox title="links">
 				<div class="link-list">
-					<a href="/blog" class="link-item">
+					<a href="/blog/" class="link-item">
 						<span class="link-glyph">[blog]</span>
 						<span class="link-desc">random memories — gaming, life, work, and everything between</span>
 					</a>

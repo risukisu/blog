@@ -1,6 +1,6 @@
 ---
 title: 'Random Messages'
-description: 'How a random LinkedIn message from a stranger changed my career and became a friendship.'
+description: 'How a random LinkedIn message from a stranger changed my career and slowly turned into a friendship. No neat moral — just a precious memory.'
 pubDate: 'Jul 11 2025'
 tags: ['life', 'work']
 ---
@@ -18,7 +18,7 @@ It crushed me for a while but it was what it was. Months passed. Life went on. T
 
 I was hesitant. Who does that? Who messages a stranger with a potential life-changing opportunity and no strings attached? Well, turns out, some people do. And even though that's a beautiful story in itself, that's not actually what I want to write about today.
 
-Back to the message. I was hesitant as hell but also curious. So I asked Dani to share the job ad. The role was Data4Good Lead at [Appsilon](https://appsilon.com) and it made me very anxious (being anxious is a very recurring theme for me, just for the record). That Appsilon seemed pretty good at softare engineering and I had zero idea about software engineering. I had never heard of that R Shiny thing they advertised they were good at. I wasn't programming and except for EcoVadis I never really worked in any tech company. I didn't have a background in AI or stats neither.
+Back to the message. I was hesitant as hell but also curious. So I asked Dani to share the job ad. The role was Data4Good Lead at [Appsilon](https://www.appsilon.com/) and it made me very anxious (being anxious is a very recurring theme for me, just for the record). That Appsilon seemed pretty good at softare engineering and I had zero idea about software engineering. I had never heard of that R Shiny thing they advertised they were good at. I wasn't programming and except for EcoVadis I never really worked in any tech company. I didn't have a background in AI or stats neither.
 
 And that was not all. Truth is, I was in a rough place mentally, and this was probably the moment I doubted myself the most in my professional life, so looking back every little part of that process was a case study in impostor syndrome.
 

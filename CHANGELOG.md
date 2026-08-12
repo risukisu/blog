@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## 2026-08-12 — Housekeeping: Headings, Links, Descriptions
+
+### Added
+- **`guestbook` terminal command** — same walk to the fire as `campfire`, for people who think in guestbooks.
+
+### Fixed
+- **Every page now has a proper H1** — post titles and box titles are real headings, not just styled text.
+- **Internal links skip a redirect hop** — nav and footer links go straight to their destination.
+- **Fuller meta descriptions everywhere** — search previews now say what a page is actually about.
+- **Dead SkillCraft repo link removed from [/projects](/projects/)** — the live site link remains.
+
 ## 2026-08-12 — The Campfire
 
 ### Added

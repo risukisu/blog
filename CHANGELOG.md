@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 2026-08-12 — The Campfire
+
+### Added
+- **[/campfire](/campfire)** — a guestbook, old internet style. No login, no tracking: your name, 140 characters, and a crackling pixel fire. Stay awhile and share your stories.
+- **Campfire in the nav** — the little animated flame next to the nav links leads there. The curious get rewarded.
+- **`campfire` terminal command** — walks you to the fire from any page.
+- **Campfire pixel art** by [krial](https://opengameart.org/content/16x16-animated-campfire) (CC0) — credited on [/acknowledgements](/acknowledgements).
+
 ## 2026-08-12 — Friends Page Updates
 
 ### Changed

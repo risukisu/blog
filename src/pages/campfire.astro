@@ -1,0 +1,315 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AsciiBox from '../components/AsciiBox.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
+import { SITE_TITLE } from '../consts';
+
+const API_BASE = 'https://campfire-api-nine.vercel.app';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Campfire — ${SITE_TITLE}`} description="the guestbook — stay awhile and share your stories" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat GUESTBOOK" />
+
+			<AsciiBox title="the campfire">
+				<div class="hearth">
+					<div class="campfire-sprite" role="img" aria-label="a crackling pixel-art campfire"></div>
+					<p class="greeting">
+						welcome to the campfire — stay awhile and share your stories.
+					</p>
+				</div>
+
+				<form id="sign-form" autocomplete="off">
+					<div class="field-row">
+						<label for="gb-name">name</label>
+						<input id="gb-name" name="name" type="text" maxlength="30" required placeholder="wanderer" />
+					</div>
+					<div class="field-row">
+						<label for="gb-message">story</label>
+						<textarea id="gb-message" name="message" maxlength="140" rows="3" required placeholder="140 characters, no links — just stories"></textarea>
+					</div>
+					<!-- if you can read this, leave the next field empty — it's for the bots -->
+					<input class="hp" name="website" type="text" tabindex="-1" aria-hidden="true" />
+					<div class="form-foot">
+						<span class="counter" id="gb-counter">0/140</span>
+						<button type="submit" class="sign-btn" id="gb-submit">[sign the guestbook]</button>
+					</div>
+					<p class="form-status" id="gb-status" role="status"></p>
+				</form>
+			</AsciiBox>
+
+			<AsciiBox title="stories told here">
+				<div id="gb-entries" class="entries">
+					<p class="entries-status">stoking the fire...</p>
+				</div>
+			</AsciiBox>
+
+			<Terminal />
+		</main>
+		<Footer />
+		<LinkPreviewTooltip />
+
+		<script is:inline define:vars={{ API_BASE }}>
+		(function () {
+			var loadedAt = Date.now();
+			var list = document.getElementById('gb-entries');
+			var form = document.getElementById('sign-form');
+			var status = document.getElementById('gb-status');
+			var counter = document.getElementById('gb-counter');
+			var messageEl = document.getElementById('gb-message');
+			var nameEl = document.getElementById('gb-name');
+			var submitBtn = document.getElementById('gb-submit');
+
+			function fmtDate(ts) {
+				var d = new Date(ts);
+				return d.toISOString().slice(0, 10);
+			}
+
+			function entryNode(entry) {
+				var row = document.createElement('div');
+				row.className = 'entry';
+				var meta = document.createElement('div');
+				meta.className = 'entry-meta';
+				var name = document.createElement('span');
+				name.className = 'entry-name';
+				name.textContent = entry.name;
+				var date = document.createElement('span');
+				date.className = 'entry-date';
+				date.textContent = fmtDate(entry.ts);
+				meta.appendChild(name);
+				meta.appendChild(date);
+				var msg = document.createElement('p');
+				msg.className = 'entry-message';
+				msg.textContent = entry.message;
+				row.appendChild(meta);
+				row.appendChild(msg);
+				return row;
+			}
+
+			function showEmpty() {
+				list.innerHTML = '';
+				var p = document.createElement('p');
+				p.className = 'entries-status';
+				p.textContent = 'the fire is quiet — no stories yet. sit, warm up, tell the first one.';
+				list.appendChild(p);
+			}
+
+			fetch(API_BASE + '/api/entries')
+				.then(function (r) {
+					if (!r.ok) throw new Error('api ' + r.status);
+					return r.json();
+				})
+				.then(function (data) {
+					if (!data.entries || data.entries.length === 0) return showEmpty();
+					list.innerHTML = '';
+					data.entries.forEach(function (e) { list.appendChild(entryNode(e)); });
+				})
+				.catch(function () {
+					list.innerHTML = '';
+					var p = document.createElement('p');
+					p.className = 'entries-status';
+					p.textContent = 'the fire crackles but does not answer — try again in a bit.';
+					list.appendChild(p);
+				});
+
+			messageEl.addEventListener('input', function () {
+				counter.textContent = Array.from(messageEl.value).length + '/140';
+			});
+
+			form.addEventListener('submit', function (ev) {
+				ev.preventDefault();
+				status.textContent = '';
+				submitBtn.disabled = true;
+				fetch(API_BASE + '/api/sign', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						name: nameEl.value,
+						message: messageEl.value,
+						website: form.elements.website.value,
+						t: Date.now() - loadedAt,
+					}),
+				})
+					.then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
+					.then(function (res) {
+						submitBtn.disabled = false;
+						if (!res.ok) {
+							status.textContent = res.data.error || 'something went wrong — try again.';
+							return;
+						}
+						var empty = list.querySelector('.entries-status');
+						if (empty) list.innerHTML = '';
+						list.insertBefore(entryNode(res.data.entry), list.firstChild);
+						form.reset();
+						counter.textContent = '0/140';
+						status.textContent = 'your story joined the fire 🔥';
+					})
+					.catch(function () {
+						submitBtn.disabled = false;
+						status.textContent = 'the fire crackles but does not answer — try again in a bit.';
+					});
+			});
+		})();
+		</script>
+	</body>
+</html>
+
+<style>
+	.hearth {
+		display: flex;
+		align-items: center;
+		gap: 1.5em;
+		margin-bottom: 1.5em;
+	}
+	.campfire-sprite {
+		width: 96px;
+		height: 96px;
+		flex-shrink: 0;
+		background: url('/campfire.png') 0 0 no-repeat;
+		background-size: 384px 96px;
+		image-rendering: pixelated;
+		animation: burn 0.8s steps(4) infinite;
+	}
+	@keyframes burn {
+		to { background-position-x: -384px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.campfire-sprite { animation: none; }
+	}
+	.greeting {
+		margin: 0;
+		color: var(--amber);
+	}
+
+	/* ── form ── */
+	#sign-form {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75em;
+	}
+	.field-row {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75em;
+	}
+	.field-row label {
+		color: var(--text-muted);
+		font-size: 0.85em;
+		width: 4em;
+		flex-shrink: 0;
+	}
+	.field-row input,
+	.field-row textarea {
+		flex: 1;
+		background: var(--bg-elevated);
+		border: 1px solid var(--border);
+		border-radius: 2px;
+		color: var(--text);
+		padding: 0.5em 0.75em;
+		resize: vertical;
+	}
+	.field-row input:focus,
+	.field-row textarea:focus {
+		outline: none;
+		border-color: var(--amber);
+	}
+	.hp {
+		position: absolute;
+		left: -9999px;
+		width: 1px;
+		height: 1px;
+		opacity: 0;
+	}
+	.form-foot {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding-left: 4.75em;
+	}
+	.counter {
+		color: var(--text-muted);
+		font-size: 0.8em;
+	}
+	.sign-btn {
+		background: none;
+		border: none;
+		padding: 0;
+		font-family: inherit;
+		font-size: 0.9em;
+		color: var(--green);
+		cursor: pointer;
+		transition: text-shadow 0.2s;
+	}
+	.sign-btn:hover {
+		text-shadow: var(--glow-green);
+	}
+	.sign-btn:disabled {
+		opacity: 0.5;
+		cursor: wait;
+	}
+	.form-status {
+		margin: 0;
+		min-height: 1.2em;
+		color: var(--amber);
+		font-size: 0.85em;
+		padding-left: 4.75em;
+	}
+
+	/* ── entries ── */
+	.entries {
+		display: flex;
+		flex-direction: column;
+		gap: 1.1em;
+	}
+	.entries-status {
+		margin: 0;
+		color: var(--text-muted);
+		font-style: italic;
+	}
+	.entry-meta {
+		display: flex;
+		align-items: baseline;
+		gap: 0.75em;
+	}
+	.entry-name {
+		color: var(--amber);
+		font-weight: 700;
+	}
+	.entry-date {
+		color: var(--text-muted);
+		font-size: 0.75em;
+	}
+	.entry-message {
+		margin: 0.15em 0 0;
+		font-size: 0.95em;
+	}
+
+	@media (max-width: 720px) {
+		.hearth {
+			flex-direction: column;
+			text-align: center;
+			gap: 0.75em;
+		}
+		.field-row {
+			flex-direction: column;
+			gap: 0.3em;
+		}
+		.field-row label {
+			width: auto;
+		}
+		.form-foot,
+		.form-status {
+			padding-left: 0;
+		}
+	}
+</style>

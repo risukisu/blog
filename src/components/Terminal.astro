@@ -48,13 +48,14 @@ const { context = { type: 'generic' } } = Astro.props;
     { slug: '/projects', title: 'projects', description: 'open-source tools and experiments' },
     { slug: '/me', title: 'me', description: 'about risu' },
     { slug: '/friends', title: 'friends', description: 'friends of the blog — curated links' },
+    { slug: '/campfire', title: 'campfire', description: 'the guestbook — stay awhile and share your stories' },
     { slug: '/changelog', title: 'changelog', description: 'what changed and when' },
     { slug: '/credits', title: 'credits', description: 'acknowledgements' }
   ];
 
   var COMMANDS = {
     help: function() {
-      return ['ls cd cat whoami friends history clear crt exit'];
+      return ['ls cd cat whoami friends campfire history clear crt exit'];
     },
     ls: function() {
       var items = (ctx.items && ctx.items.length) ? ctx.items : NAV_LINKS;
@@ -96,7 +97,7 @@ const { context = { type: 'generic' } } = Astro.props;
       if (!args) return ['usage: cd [path]'];
       var path = args.trim();
       if (path.charAt(0) !== '/') path = '/' + path;
-      var valid = ['/blog', '/projects', '/me', '/friends', '/changelog', '/credits', '/'];
+      var valid = ['/blog', '/projects', '/me', '/friends', '/campfire', '/changelog', '/credits', '/'];
       for (var i = 0; i < valid.length; i++) {
         if (valid[i] === path || valid[i] === path.replace(/\/$/, '')) {
           setTimeout(function() { window.location.href = path; }, 150);
@@ -111,6 +112,10 @@ const { context = { type: 'generic' } } = Astro.props;
     friends: function() {
       setTimeout(function() { window.location.href = '/friends'; }, 150);
       return ['surfing to /friends...'];
+    },
+    campfire: function() {
+      setTimeout(function() { window.location.href = '/campfire'; }, 150);
+      return ['walking toward the fire...'];
     },
     history: function() {
       var h = JSON.parse(sessionStorage.getItem(histKey) || '[]');

@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here.
 
+## 2026-08-12 — Friends of the Blog
+
+### Added
+- **[/friends](/friends)** — a links page like the old internet used to make. Curated sites of people I actually know, each with a hand-drawn 88×31 pixel button. First residents: [gigi kenneth](https://www.gigikenneth.com/) and [euzebiusz](https://euzebiusz.xyz/).
+- **Link back** — risu.pl now has its own 88×31 button you can embed on your site. Webrings only work in both directions.
+- **`friends` terminal command** — type `friends` in the terminal and it surfs you there. `ls` on the friends page lists the residents.
+
 ## 2026-08-12 — New Post: I Love AI, I Hate AI
 
 ### Published

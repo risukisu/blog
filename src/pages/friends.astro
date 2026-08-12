@@ -1,0 +1,214 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AsciiBox from '../components/AsciiBox.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
+import { SITE_TITLE } from '../consts';
+
+// Adding a friend = one entry here + one 88×31 PNG in public/buttons/
+const friends = [
+	{
+		name: 'gigi kenneth',
+		url: 'https://www.gigikenneth.com/',
+		button: '/buttons/gigi-kenneth.png',
+		desc: 'lab → ML → words. Biochemist turned machine-learning engineer turned writer — makes AI and life-science work make sense. Warsaw-based, building Asele.',
+		preview: 'I turn AI & data work into content that moves people to act.',
+		domain: 'gigikenneth.com',
+	},
+	{
+		name: 'euzebiusz',
+		url: 'https://euzebiusz.xyz/',
+		button: '/buttons/euzebiusz.png',
+		desc: '"euzebiusz\'s organized mess" (his words). Polish and English in varying proportions, depending on the moon phase. The old internet, alive and well.',
+		preview: 'uporządkowany pierdolnik euzebiusza / euzebiusz\'s organized mess',
+		domain: 'euzebiusz.xyz',
+	},
+];
+
+const embedSnippet = '<a href="https://risu.pl"><img src="https://risu.pl/buttons/risu.png" alt="risu.pl — random memories" width="88" height="31"></a>';
+
+const terminalItems = friends.map((f) => ({
+	slug: f.name.replace(/\s+/g, '-'),
+	title: f.name,
+	description: f.desc,
+}));
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Friends — ${SITE_TITLE}`} description="friends of the blog — curated links to sites I actually visit" />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat FRIENDS" />
+
+			<AsciiBox title="friends of the blog">
+				<p class="intro">
+					Corners of the web I actually visit — curated by a human, no algorithm involved.
+					<a
+						href="https://www.youtube.com/watch?v=tkUgOT22F5s"
+						target="_blank"
+						rel="noopener noreferrer"
+						data-preview="A Web Revival: the Internet didn't die, you're just not on it — the video that says it best."
+						data-domain="youtube.com"
+					>The web revival is real.</a>
+				</p>
+
+				<div class="friend-list">
+					{friends.map((f) => (
+						<div class="friend">
+							<a href={f.url} target="_blank" rel="noopener noreferrer" class="friend-button" aria-label={f.name}>
+								<img src={f.button} alt={`${f.name} — 88×31 button`} width="176" height="62" loading="lazy" />
+							</a>
+							<div class="friend-info">
+								<span class="friend-name">{f.name}</span>
+								<span class="friend-desc">{f.desc}</span>
+								<a
+									href={f.url}
+									target="_blank"
+									rel="noopener noreferrer"
+									class="friend-visit"
+									data-preview={f.preview}
+									data-domain={f.domain}
+								>[visit ↗]</a>
+							</div>
+						</div>
+					))}
+				</div>
+			</AsciiBox>
+
+			<AsciiBox title="link back">
+				<p class="intro">
+					Webrings only work in both directions. Here's my button — put it on your site:
+				</p>
+
+				<div class="linkback">
+					<img src="/buttons/risu.png" alt="risu.pl — random memories" width="176" height="62" class="own-button" />
+					<div class="snippet-box">
+						<code>{embedSnippet}</code>
+						<button class="copy-btn" data-snippet={embedSnippet}>[copy]</button>
+					</div>
+				</div>
+
+				<p class="want-in">
+					Got a corner of the web and we know each other? Tell me — ways to reach me are on <a href="/me">/me</a>.
+				</p>
+			</AsciiBox>
+
+			<Terminal context={{ type: 'friends', items: terminalItems }} />
+		</main>
+		<Footer />
+		<LinkPreviewTooltip />
+
+		<script is:inline>
+			document.querySelectorAll('.copy-btn').forEach(function (btn) {
+				btn.addEventListener('click', function () {
+					navigator.clipboard.writeText(btn.dataset.snippet).then(function () {
+						btn.textContent = '[copied!]';
+						setTimeout(function () { btn.textContent = '[copy]'; }, 1500);
+					});
+				});
+			});
+		</script>
+	</body>
+</html>
+
+<style>
+	.intro {
+		margin: 0 0 1.25em;
+		color: var(--text-muted);
+	}
+	.friend-list {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5em;
+	}
+	.friend {
+		display: flex;
+		align-items: flex-start;
+		gap: 1.25em;
+	}
+	.friend-button img,
+	.own-button {
+		image-rendering: pixelated;
+		display: block;
+		flex-shrink: 0;
+	}
+	.friend-button {
+		flex-shrink: 0;
+		line-height: 0;
+		transition: filter 0.2s;
+	}
+	.friend-button:hover {
+		filter: brightness(1.25);
+	}
+	.friend-info {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25em;
+		font-size: 0.9em;
+	}
+	.friend-name {
+		color: var(--text-bright);
+		font-weight: 700;
+	}
+	.friend-desc {
+		color: var(--text-muted);
+	}
+	.friend-visit {
+		align-self: flex-start;
+	}
+	.linkback {
+		display: flex;
+		align-items: flex-start;
+		gap: 1.25em;
+		flex-wrap: wrap;
+	}
+	.snippet-box {
+		flex: 1;
+		min-width: 240px;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5em;
+	}
+	.snippet-box code {
+		display: block;
+		padding: 0.75em 1em;
+		font-size: 0.75em;
+		word-break: break-all;
+		white-space: normal;
+	}
+	.copy-btn {
+		align-self: flex-start;
+		background: none;
+		border: none;
+		padding: 0;
+		font-family: inherit;
+		font-size: 0.85em;
+		color: var(--green);
+		cursor: pointer;
+		transition: text-shadow 0.2s;
+	}
+	.copy-btn:hover {
+		text-shadow: var(--glow-green);
+	}
+	.want-in {
+		margin: 1.25em 0 0;
+		color: var(--text-muted);
+		font-size: 0.9em;
+	}
+	@media (max-width: 720px) {
+		.friend {
+			flex-direction: column;
+			gap: 0.6em;
+		}
+		.linkback {
+			flex-direction: column;
+		}
+	}
+</style>

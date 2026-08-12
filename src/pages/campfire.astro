@@ -266,30 +266,32 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 	}
 
 	/* ── entries ── */
+	/* :global() — these nodes are created by the fetch script, so they
+	   don't carry Astro's scope attribute */
 	.entries {
 		display: flex;
 		flex-direction: column;
 		gap: 1.1em;
 	}
-	.entries-status {
+	.entries :global(.entries-status) {
 		margin: 0;
 		color: var(--text-muted);
 		font-style: italic;
 	}
-	.entry-meta {
+	.entries :global(.entry-meta) {
 		display: flex;
 		align-items: baseline;
 		gap: 0.75em;
 	}
-	.entry-name {
+	.entries :global(.entry-name) {
 		color: var(--amber);
 		font-weight: 700;
 	}
-	.entry-date {
+	.entries :global(.entry-date) {
 		color: var(--text-muted);
 		font-size: 0.75em;
 	}
-	.entry-message {
+	.entries :global(.entry-message) {
 		margin: 0.15em 0 0;
 		font-size: 0.95em;
 	}

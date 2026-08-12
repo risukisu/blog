@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 2026-08-12 — New Post: I Love AI, I Hate AI
+
+### Published
+- **["I Love AI, I Hate AI"](/blog/i-love-ai-i-hate-ai/)** — both things are true at once: building with AI agents is the most fun I've had in years, and most of what people do with AI makes me want to log off. On tools, hammers, and the one thing you should never outsource.
+
+### Added
+- **Image captions** — images in posts can now carry a proper caption underneath, and tall images are capped so a portrait meme no longer eats the whole screen.
+
 ## 2026-07-20 — New Post: I'm Angry All the Time
 
 ### Published

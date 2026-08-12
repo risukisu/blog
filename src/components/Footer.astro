@@ -13,7 +13,7 @@ const today = new Date();
 			<span>&middot;</span>
 			<a href="https://github.com/risukisu" target="_blank">[github]</a>
 			<span>&middot;</span>
-			<a href="/friends">[friends]</a>
+			<a href="/friends" class="friends-link">[friends]<span class="blink-dot"></span></a>
 			<span>&middot;</span>
 			<a href="/acknowledgements">[credits]</a>
 		</div>
@@ -54,5 +54,22 @@ const today = new Date();
 	}
 	.footer-links a:hover {
 		color: var(--cyan);
+	}
+	.friends-link {
+		position: relative;
+	}
+	.blink-dot {
+		display: inline-block;
+		width: 0.4em;
+		height: 0.4em;
+		background-color: var(--green);
+		border-radius: 50%;
+		margin-left: 0.3em;
+		vertical-align: middle;
+		animation: blink 1s infinite;
+	}
+	@keyframes blink {
+		0%, 49% { opacity: 1; }
+		50%, 100% { opacity: 0.3; }
 	}
 </style>

@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented here.
 
+## 2026-08-12 — Friends Page Updates
+
+### Changed
+- **Gigi kenneth's description** — updated to reflect her personal brand more directly: "a friend of mine with a cool personal website and a blog, writing about marketing and ai"
+- **Friends button in footer** — now has a tiny blinking green dot to draw attention to the friends page 🟢
+
 ## 2026-08-12 — Friends of the Blog
 
 ### Added

@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 2026-08-13 — Introducing Myself to the Robots
+
+### Added
+- **Person + WebSite structured data on the homepage** — search engines now know that risu, risukisu, and Andrzej Białaś are the same creature, and that this site connects to the GitHub, LinkedIn, and Substack corners of it.
+
 ## 2026-08-12 — Housekeeping: Headings, Links, Descriptions
 
 ### Added

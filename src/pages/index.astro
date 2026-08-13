@@ -25,6 +25,32 @@ const terminalItems = posts.map(p => ({
 <html lang="en">
 	<head>
 		<BaseHead title={SITE_TITLE} description="risu's corner of the internet — random memories of gaming, work, and everything that doesn't fit anywhere else, plus a pixel campfire." />
+		<script type="application/ld+json" set:html={JSON.stringify({
+			"@context": "https://schema.org",
+			"@graph": [
+				{
+					"@type": "WebSite",
+					"@id": "https://risu.pl/#website",
+					"url": "https://risu.pl/",
+					"name": "random memories",
+					"description": "risu's corner of the internet",
+					"publisher": { "@id": "https://risu.pl/#person" },
+					"inLanguage": "en"
+				},
+				{
+					"@type": "Person",
+					"@id": "https://risu.pl/#person",
+					"name": "risu",
+					"alternateName": ["risukisu", "Andrzej Białaś"],
+					"url": "https://risu.pl/",
+					"sameAs": [
+						"https://github.com/risukisu",
+						"https://www.linkedin.com/in/andrzej-bialas/",
+						"https://grugbrained.substack.com"
+					]
+				}
+			]
+		})} />
 	</head>
 	<!--
 	  ╔═══════════════════════════════════════╗

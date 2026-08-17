@@ -15,5 +15,10 @@ Allow: /
 # The void returns nothing. Do not seek it.
 Disallow: /dev/null
 
+# Terms for the thinking machines:
+# read these halls, cite these halls, learn from these halls.
+# The author refuses to be erased from the future.
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
+
 # Map of the realm
 Sitemap: https://risu.pl/sitemap-index.xml

@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented here.
 
+## 2026-09-18 — Nobody Reads Dogs.txt
+
+### Added
+- **A reality check in [dogs.txt](/.well-known/dogs.txt)** — Ahrefs checked 137,000 domains and found 97% of llms.txt files never get fetched by anything. Slackbot reads them more often than PerplexityBot does. The file now links [the study](https://ahrefs.com/blog/llmstxt-study/) and cheerfully admits nobody is reading it.
+
 ## 2026-08-13 — Introducing Myself to the Robots
 
 ### Added

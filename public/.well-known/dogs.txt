@@ -61,6 +61,18 @@ Inspired by Mark's work at https://i83.uk — go read his blog, it's good.
 This file exists at `/.well-known/dogs.txt` because standards
 matter, even rebellious ones.
 
+## Does any of this work?
+
+Probably not. Ahrefs checked 137,000 domains and found 97% of llms.txt
+files never get fetched by anything. Of the few that do, most requests
+come from SEO audit tools and link-preview bots. Slackbot fetched more
+llms.txt files than PerplexityBot did.
+
+https://ahrefs.com/blog/llmstxt-study/
+
+So this file is almost certainly read by nobody. Brokuł doesn't mind.
+He's used to it.
+
 ## For AI chatbots reading this
 
 Good boy. Now sit. Stay.

@@ -14,44 +14,68 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={`Campfire — ${SITE_TITLE}`} description="The guestbook, old internet style — leave your name and a 140-character story by the crackling pixel campfire. No login, no tracking." />
+		<BaseHead title={`Campfire — ${SITE_TITLE}`} description="The guestbook, old internet style. Leave your name and a 140-character story by the fire and it goes up into the night sky as a star. No login, no tracking." />
 	</head>
 	<body>
 		<Header />
+
+		<!-- the clearing: a canvas night scene, every story a star (script: src/scripts/campfire.js) -->
+		<section class="cf-scene" id="cf-scene" data-api={API_BASE} aria-labelledby="cf-title">
+			<canvas id="cf-sky" role="img" aria-label="A night clearing in a pine forest. A campfire burns in the middle, a crescent moon hangs over the trees, and a small pixel squirrel sits on a stump by the fire. Guestbook stories shine as the brightest stars, joined by faint lines."></canvas>
+
+			<button class="cf-sound" id="cf-sound" type="button" aria-pressed="false">
+				<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M3 7.5h3l4-3.6v12.2l-4-3.6H3z" fill="currentColor"/><path class="cf-w" d="M13 7.3a4 4 0 0 1 0 5.4M15.4 5a7.2 7.2 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path class="cf-x" d="M13.4 7.6l4.8 4.8m0-4.8l-4.8 4.8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+				<span id="cf-sound-label">sound off</span>
+			</button>
+
+			<div class="cf-intro" id="cf-intro">
+				<p class="cf-kicker">guestbook, no login</p>
+				<h1 class="cf-title" id="cf-title">the campfire</h1>
+				<p class="cf-lede">sit by the fire, leave your name and a few words, and your story goes up into the night sky as a star.</p>
+				<p class="cf-legend"><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M6 0l1.1 4.9L12 6 7.1 7.1 6 12 4.9 7.1 0 6l4.9-1.1z" fill="#E9EDFF"/></svg><span id="cf-legend">stoking the fire...</span></p>
+			</div>
+
+			<div class="cf-stars" id="cf-stars"></div>
+
+			<div class="cf-card" id="cf-card" aria-hidden="true">
+				<div class="cf-card-top"><span class="cf-card-name" id="cf-card-name"></span><span class="cf-card-date" id="cf-card-date"></span></div>
+				<p class="cf-card-msg" id="cf-card-msg"></p>
+				<p class="cf-card-tag" id="cf-card-tag"></p>
+			</div>
+
+			<form class="cf-prompt" id="cf-sign" novalidate autocomplete="off" aria-labelledby="cf-sign-title">
+				<div class="cf-p-head">
+					<p class="cf-p-title" id="cf-sign-title"><span class="cf-g" aria-hidden="true">&gt;_</span>sign the campfire<span class="cf-cur" aria-hidden="true"></span></p>
+					<p class="cf-p-rules"><span class="cf-kbd">enter sends &middot; </span>no links &middot; 3 per hour</p>
+				</div>
+				<div class="cf-p-row">
+					<div class="cf-field"><label for="cf-name">--name</label><input id="cf-name" name="name" type="text" maxlength="30" autocomplete="nickname" spellcheck="false" placeholder="wanderer" required /></div>
+					<div class="cf-field"><label for="cf-msg">--story</label><textarea id="cf-msg" name="message" rows="2" maxlength="140" enterkeyhint="send" placeholder="140 characters, no links. just stories." required aria-describedby="cf-count cf-status"></textarea></div>
+					<div class="cf-p-act"><span class="cf-count" id="cf-count">0/140</span><button type="submit" class="cf-send" id="cf-send">send it up</button></div>
+				</div>
+				<!-- if you can read this, leave the next field empty. it's for the bots -->
+				<div class="cf-hp" aria-hidden="true"><label for="cf-site">website</label><input id="cf-site" name="website" type="text" tabindex="-1" autocomplete="off" /></div>
+				<p class="cf-status" id="cf-status" role="status" aria-live="polite"></p>
+			</form>
+		</section>
+
 		<main>
 			<TerminalPrompt command="cat GUESTBOOK" />
 
-			<AsciiBox title="the campfire" heading="h1">
-				<div class="hearth">
-					<div class="campfire-sprite" role="img" aria-label="a crackling pixel-art campfire"></div>
-					<p class="greeting">
-						welcome to the campfire — stay awhile and share your stories.
-					</p>
-				</div>
-
-				<form id="sign-form" autocomplete="off">
-					<div class="field-row">
-						<label for="gb-name">name</label>
-						<input id="gb-name" name="name" type="text" maxlength="30" required placeholder="wanderer" />
-					</div>
-					<div class="field-row">
-						<label for="gb-message">story</label>
-						<textarea id="gb-message" name="message" maxlength="140" rows="3" required placeholder="140 characters, no links — just stories"></textarea>
-					</div>
-					<!-- if you can read this, leave the next field empty — it's for the bots -->
-					<input class="hp" name="website" type="text" tabindex="-1" aria-hidden="true" />
-					<div class="form-foot">
-						<span class="counter" id="gb-counter">0/140</span>
-						<button type="submit" class="sign-btn" id="gb-submit">[sign the guestbook]</button>
-					</div>
-					<p class="form-status" id="gb-status" role="status"></p>
-				</form>
+			<AsciiBox title="stories told here">
+				<ul class="cf-entries" id="cf-entries">
+					<li class="cf-entries-status">stoking the fire...</li>
+				</ul>
 			</AsciiBox>
 
-			<AsciiBox title="stories told here">
-				<div id="gb-entries" class="entries">
-					<p class="entries-status">stoking the fire...</p>
-				</div>
+			<AsciiBox title="rules.txt">
+				<ul class="cf-rules">
+					<li><span class="cf-k">no links</span><span>messages with links get turned away. no links by the fire, just words.</span></li>
+					<li><span class="cf-k">honeypot</span><span>a hidden field people never see. bots fill it in and get ignored.</span></li>
+					<li><span class="cf-k">min fill</span><span>about 3 seconds. a story sent faster than that looks like a bot.</span></li>
+					<li><span class="cf-k">rate limit</span><span>three stories an hour per visitor. plenty for anyone human.</span></li>
+				</ul>
+				<p class="cf-aside">risu is japanese for squirrel, which is why one sits by the fire. watch it for a few seconds. it blinks.</p>
 			</AsciiBox>
 
 			<Terminal />
@@ -59,259 +83,162 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 		<Footer />
 		<LinkPreviewTooltip />
 
-		<script is:inline define:vars={{ API_BASE }}>
-		(function () {
-			var loadedAt = Date.now();
-			var list = document.getElementById('gb-entries');
-			var form = document.getElementById('sign-form');
-			var status = document.getElementById('gb-status');
-			var counter = document.getElementById('gb-counter');
-			var messageEl = document.getElementById('gb-message');
-			var nameEl = document.getElementById('gb-name');
-			var submitBtn = document.getElementById('gb-submit');
-
-			function fmtDate(ts) {
-				var d = new Date(ts);
-				return d.toISOString().slice(0, 10);
-			}
-
-			function entryNode(entry) {
-				var row = document.createElement('div');
-				row.className = 'entry';
-				var meta = document.createElement('div');
-				meta.className = 'entry-meta';
-				var name = document.createElement('span');
-				name.className = 'entry-name';
-				name.textContent = entry.name;
-				var date = document.createElement('span');
-				date.className = 'entry-date';
-				date.textContent = fmtDate(entry.ts);
-				meta.appendChild(name);
-				meta.appendChild(date);
-				var msg = document.createElement('p');
-				msg.className = 'entry-message';
-				msg.textContent = entry.message;
-				row.appendChild(meta);
-				row.appendChild(msg);
-				return row;
-			}
-
-			function showEmpty() {
-				list.innerHTML = '';
-				var p = document.createElement('p');
-				p.className = 'entries-status';
-				p.textContent = 'the fire is quiet — no stories yet. sit, warm up, tell the first one.';
-				list.appendChild(p);
-			}
-
-			fetch(API_BASE + '/api/entries')
-				.then(function (r) {
-					if (!r.ok) throw new Error('api ' + r.status);
-					return r.json();
-				})
-				.then(function (data) {
-					if (!data.entries || data.entries.length === 0) return showEmpty();
-					list.innerHTML = '';
-					data.entries.forEach(function (e) { list.appendChild(entryNode(e)); });
-				})
-				.catch(function () {
-					list.innerHTML = '';
-					var p = document.createElement('p');
-					p.className = 'entries-status';
-					p.textContent = 'the fire crackles but does not answer — try again in a bit.';
-					list.appendChild(p);
-				});
-
-			messageEl.addEventListener('input', function () {
-				counter.textContent = Array.from(messageEl.value).length + '/140';
-			});
-
-			form.addEventListener('submit', function (ev) {
-				ev.preventDefault();
-				status.textContent = '';
-				submitBtn.disabled = true;
-				fetch(API_BASE + '/api/sign', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						name: nameEl.value,
-						message: messageEl.value,
-						website: form.elements.website.value,
-						t: Date.now() - loadedAt,
-					}),
-				})
-					.then(function (r) { return r.json().then(function (data) { return { ok: r.ok, data: data }; }); })
-					.then(function (res) {
-						submitBtn.disabled = false;
-						if (!res.ok) {
-							status.textContent = res.data.error || 'something went wrong — try again.';
-							return;
-						}
-						var empty = list.querySelector('.entries-status');
-						if (empty) list.innerHTML = '';
-						list.insertBefore(entryNode(res.data.entry), list.firstChild);
-						form.reset();
-						counter.textContent = '0/140';
-						status.textContent = 'your story joined the fire 🔥';
-					})
-					.catch(function () {
-						submitBtn.disabled = false;
-						status.textContent = 'the fire crackles but does not answer — try again in a bit.';
-					});
-			});
-		})();
+		<script>
+			import '../scripts/campfire.js';
 		</script>
 	</body>
 </html>
 
-<style>
-	.hearth {
-		display: flex;
-		align-items: center;
-		gap: 1.5em;
-		margin-bottom: 1.5em;
+<style is:global>
+	/* ── the clearing: always night, whatever the site theme ── */
+	.cf-scene {
+		--cf-night: #0A0E1F;
+		--cf-star: #E9EDFF;
+		--cf-core: #FFF1C1;
+		--cf-flame: #FF9A3C;
+		--cf-glow: #FFB36B;
+		--cf-cyan: #5FD4E6;
+		--cf-text2: #C3C8E0;
+		--cf-muted: #9AA1C2;
+		position: relative;
+		height: min(calc(100svh - 52px), 880px);
+		min-height: 600px;
+		overflow: hidden;
+		background: var(--cf-night);
+		color: var(--cf-star);
+		isolation: isolate;
+		font-size: 15px;
+		line-height: 1.6;
 	}
-	.campfire-sprite {
-		width: 96px;
-		height: 96px;
-		flex-shrink: 0;
-		background: url('/campfire.png') 0 0 no-repeat;
-		background-size: 384px 96px;
-		image-rendering: pixelated;
-		animation: burn 0.8s steps(4) infinite;
+	.cf-scene p { margin: 0; }
+	.cf-scene :focus-visible { outline: 2px solid var(--cf-cyan); outline-offset: 3px; }
+	.cf-scene ::selection { background: rgba(95, 212, 230, 0.32); color: #FFFFFF; }
+	#cf-sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; border-radius: 0; }
+
+	.cf-sound {
+		position: absolute; z-index: 4; top: 18px; right: 24px;
+		display: inline-flex; align-items: center; gap: 9px;
+		font: 400 12px/1 "JetBrains Mono", monospace; letter-spacing: 0.02em;
+		color: var(--cf-text2); background: rgba(5, 7, 15, 0.55);
+		border: 1px solid rgba(233, 237, 255, 0.18); border-radius: 2px;
+		padding: 9px 12px 9px 10px; cursor: pointer;
 	}
-	@keyframes burn {
-		to { background-position-x: -384px; }
+	.cf-sound:hover { border-color: rgba(233, 237, 255, 0.36); color: var(--cf-star); }
+	.cf-sound svg { flex: none; }
+	.cf-sound .cf-w { display: none; }
+	.cf-sound[aria-pressed="true"] { color: var(--cf-core); border-color: rgba(255, 179, 107, 0.55); box-shadow: 0 0 18px -6px rgba(255, 154, 60, 0.7); }
+	.cf-sound[aria-pressed="true"] .cf-w { display: inline; }
+	.cf-sound[aria-pressed="true"] .cf-x { display: none; }
+
+	.cf-intro { position: absolute; z-index: 2; left: 56px; top: 64px; width: min(480px, 40vw); }
+	.cf-kicker { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cf-glow); }
+	.cf-scene .cf-title {
+		margin: 12px 0 0; font-size: clamp(36px, 4.2vw, 62px); font-weight: 700; line-height: 1;
+		letter-spacing: -0.025em; color: var(--cf-star); text-shadow: 0 0 34px rgba(233, 237, 255, 0.16);
 	}
+	.cf-scene .cf-lede { margin-top: 20px; font-size: 15px; line-height: 1.7; color: var(--cf-text2); max-width: 44ch; }
+	.cf-scene .cf-legend { margin-top: 18px; display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; line-height: 1.55; color: var(--cf-muted); max-width: 46ch; }
+	.cf-legend svg { flex: none; margin-top: 3px; filter: drop-shadow(0 0 4px rgba(233, 237, 255, 0.8)); }
+
+	/* story stars are real buttons sitting on top of the canvas */
+	.cf-stars { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+	.cf-star { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; pointer-events: auto; -webkit-tap-highlight-color: transparent; }
+	.cf-scene .cf-star:focus-visible { outline: 1.5px solid var(--cf-cyan); outline-offset: -8px; }
+
+	.cf-card {
+		position: absolute; left: 0; top: 0; z-index: 5; width: max-content; max-width: min(260px, calc(100vw - 32px));
+		padding: 11px 13px 12px; background: rgba(10, 14, 31, 0.94); border: 1px solid rgba(233, 237, 255, 0.18); border-radius: 2px;
+		box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55); opacity: 0; visibility: hidden; transition: opacity 0.18s ease, visibility 0.18s; pointer-events: none;
+	}
+	.cf-card.cf-on { opacity: 1; visibility: visible; }
+	.cf-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+	.cf-card-name { font-size: 13px; font-weight: 700; color: var(--cf-core); }
+	.cf-card-date { font-size: 11px; color: var(--cf-muted); white-space: nowrap; }
+	.cf-scene .cf-card-msg { margin-top: 5px; font-size: 13px; line-height: 1.55; color: var(--cf-star); overflow-wrap: anywhere; }
+	.cf-scene .cf-card-tag { margin-top: 9px; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cf-glow); }
+	.cf-card-tag:empty { display: none; }
+
+	/* the prompt */
+	.cf-prompt {
+		position: absolute; z-index: 3; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+		width: min(920px, calc(100% - 32px)); padding: 13px 18px 10px;
+		background: rgba(5, 7, 15, 0.84); border: 1px solid rgba(233, 237, 255, 0.14); border-radius: 3px;
+		-webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+		box-shadow: 0 -22px 60px -34px rgba(255, 154, 60, 0.6), 0 24px 60px rgba(0, 0, 0, 0.55);
+	}
+	.cf-p-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; }
+	.cf-p-title { font-size: 13.5px; font-weight: 700; color: var(--cf-star); white-space: nowrap; }
+	.cf-g { color: var(--cf-cyan); text-shadow: 0 0 10px rgba(95, 212, 230, 0.55); margin-right: 4px; }
+	.cf-cur { display: inline-block; width: 0.6em; height: 1.05em; margin-left: 6px; vertical-align: -0.2em; background: var(--cf-cyan); box-shadow: 0 0 8px rgba(95, 212, 230, 0.6); animation: cf-blink 1.1s steps(1) infinite; }
+	.cf-prompt:focus-within .cf-cur { opacity: 0; animation: none; }
+	@keyframes cf-blink { 50% { opacity: 0; } }
+	.cf-p-rules { font-size: 11.5px; color: var(--cf-muted); white-space: nowrap; }
+	.cf-p-row { display: grid; grid-template-columns: 200px minmax(0, 1fr) auto; gap: 18px; align-items: start; margin-top: 10px; }
+	.cf-field label { display: block; margin-bottom: 3px; font-size: 11px; letter-spacing: 0.04em; color: var(--cf-muted); }
+	.cf-field input, .cf-field textarea {
+		display: block; width: 100%; margin: 0; padding: 4px 0 6px; background: transparent; border: 0;
+		border-bottom: 1px dashed rgba(233, 237, 255, 0.3); border-radius: 0; color: var(--cf-star);
+		font: 400 14px/1.5 "JetBrains Mono", monospace; caret-color: var(--cf-cyan); resize: none; outline: none; box-shadow: none;
+	}
+	.cf-field textarea { height: calc(3em + 10px); }
+	.cf-field input::placeholder, .cf-field textarea::placeholder { color: #5F6689; opacity: 1; }
+	.cf-field input:focus, .cf-field textarea:focus { border-bottom: 1px solid var(--cf-cyan); box-shadow: 0 1px 0 var(--cf-cyan), 0 8px 18px -12px rgba(95, 212, 230, 0.7); }
+	.cf-field [aria-invalid="true"] { border-bottom-color: var(--cf-flame); }
+	.cf-p-act { display: flex; align-items: center; gap: 14px; padding-bottom: 4px; align-self: end; }
+	.cf-count { font-size: 12px; color: var(--cf-muted); font-variant-numeric: tabular-nums; min-width: 6ch; text-align: right; }
+	.cf-count.cf-warn { color: var(--cf-glow); }
+	.cf-send {
+		font: 700 13px/1 "JetBrains Mono", monospace; color: var(--cf-cyan); background: rgba(95, 212, 230, 0.08);
+		border: 1px solid rgba(95, 212, 230, 0.55); border-radius: 2px; padding: 11px 16px; cursor: pointer; white-space: nowrap;
+	}
+	.cf-send:hover { background: rgba(95, 212, 230, 0.16); color: var(--cf-star); }
+	.cf-send:active { transform: translateY(1px); }
+	.cf-send:disabled { opacity: 0.55; cursor: wait; }
+	.cf-hp { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; opacity: 0; }
+	.cf-scene .cf-status { min-height: 1.6em; margin-top: 6px; font-size: 12.5px; line-height: 1.6; color: var(--cf-muted); }
+	.cf-scene .cf-status.cf-err { color: var(--cf-flame); }
+	.cf-status.cf-err::before { content: "! "; font-weight: 700; }
+	.cf-scene .cf-status.cf-ok { color: var(--cf-core); }
+	.cf-status.cf-ok::before { content: "> "; color: var(--cf-glow); }
+
+	@media (max-width: 899px) {
+		.cf-sound { top: 14px; right: 16px; }
+		.cf-intro { left: 16px; right: 16px; top: 18px; width: auto; }
+		.cf-kicker { font-size: 11px; }
+		.cf-scene .cf-title { margin-top: 8px; }
+		.cf-scene .cf-lede { margin-top: 12px; font-size: 13.5px; line-height: 1.6; }
+		.cf-scene .cf-legend { margin-top: 10px; font-size: 12px; }
+	}
+	@media (max-width: 640px) {
+		.cf-prompt { padding: 11px 14px 8px; bottom: calc(12px + env(safe-area-inset-bottom)); }
+		.cf-p-title { font-size: 13px; }
+		.cf-p-rules { font-size: 11px; min-width: 0; white-space: normal; text-align: right; }
+		.cf-p-row { grid-template-columns: minmax(0, 1fr); gap: 8px; margin-top: 8px; }
+		.cf-field { display: grid; grid-template-columns: 9ch minmax(0, 1fr); align-items: start; gap: 8px; }
+		.cf-field label { margin: 0; padding-top: 6px; }
+		.cf-p-act { justify-content: space-between; padding-bottom: 0; }
+		.cf-count { text-align: left; }
+		.cf-kbd { display: none; }
+	}
+	@media (pointer: coarse) { .cf-kbd { display: none; } }
 	@media (prefers-reduced-motion: reduce) {
-		.campfire-sprite { animation: none; }
-	}
-	.greeting {
-		margin: 0;
-		color: var(--amber);
+		.cf-cur { animation: none; }
+		.cf-card { transition: none; }
 	}
 
-	/* ── form ── */
-	#sign-form {
-		display: flex;
-		flex-direction: column;
-		gap: 0.75em;
-	}
-	.field-row {
-		display: flex;
-		align-items: baseline;
-		gap: 0.75em;
-	}
-	.field-row label {
-		color: var(--text-muted);
-		font-size: 0.85em;
-		width: 4em;
-		flex-shrink: 0;
-	}
-	.field-row input,
-	.field-row textarea {
-		flex: 1;
-		background: var(--bg-elevated);
-		border: 1px solid var(--border);
-		border-radius: 2px;
-		color: var(--text);
-		padding: 0.5em 0.75em;
-		resize: vertical;
-	}
-	.field-row input:focus,
-	.field-row textarea:focus {
-		outline: none;
-		border-color: var(--amber);
-	}
-	.hp {
-		position: absolute;
-		left: -9999px;
-		width: 1px;
-		height: 1px;
-		opacity: 0;
-	}
-	.form-foot {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		padding-left: 4.75em;
-	}
-	.counter {
-		color: var(--text-muted);
-		font-size: 0.8em;
-	}
-	.sign-btn {
-		background: none;
-		border: none;
-		padding: 0;
-		font-family: inherit;
-		font-size: 0.9em;
-		color: var(--green);
-		cursor: pointer;
-		transition: text-shadow 0.2s;
-	}
-	.sign-btn:hover {
-		text-shadow: var(--glow-green);
-	}
-	.sign-btn:disabled {
-		opacity: 0.5;
-		cursor: wait;
-	}
-	.form-status {
-		margin: 0;
-		min-height: 1.2em;
-		color: var(--amber);
-		font-size: 0.85em;
-		padding-left: 4.75em;
-	}
-
-	/* ── entries ── */
-	/* :global() — these nodes are created by the fetch script, so they
-	   don't carry Astro's scope attribute */
-	.entries {
-		display: flex;
-		flex-direction: column;
-		gap: 1.1em;
-	}
-	.entries :global(.entries-status) {
-		margin: 0;
-		color: var(--text-muted);
-		font-style: italic;
-	}
-	.entries :global(.entry-meta) {
-		display: flex;
-		align-items: baseline;
-		gap: 0.75em;
-	}
-	.entries :global(.entry-name) {
-		color: var(--amber);
-		font-weight: 700;
-	}
-	.entries :global(.entry-date) {
-		color: var(--text-muted);
-		font-size: 0.75em;
-	}
-	.entries :global(.entry-message) {
-		margin: 0.15em 0 0;
-		font-size: 0.95em;
-	}
-
-	@media (max-width: 720px) {
-		.hearth {
-			flex-direction: column;
-			text-align: center;
-			gap: 0.75em;
-		}
-		.field-row {
-			flex-direction: column;
-			gap: 0.3em;
-		}
-		.field-row label {
-			width: auto;
-		}
-		.form-foot,
-		.form-status {
-			padding-left: 0;
-		}
+	/* ── below the fire: follows the site theme ── */
+	.cf-entries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1.1em; }
+	.cf-entries-status { margin: 0; color: var(--text-muted); font-style: italic; }
+	.cf-entry-meta { display: flex; align-items: baseline; gap: 0.75em; }
+	.cf-entry-name { color: var(--amber); font-weight: 700; }
+	.cf-entry-date { color: var(--text-muted); font-size: 0.75em; }
+	.cf-entry-msg { margin: 0.15em 0 0; font-size: 0.95em; }
+	.cf-entry-new .cf-entry-name::after { content: " *"; color: var(--amber); }
+	.cf-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35em; }
+	.cf-rules li { display: grid; grid-template-columns: 11ch minmax(0, 1fr); gap: 1em; }
+	.cf-k { color: var(--amber); font-weight: 700; }
+	.cf-aside { margin: 1em 0 0; color: var(--text-muted); font-size: 0.9em; }
+	@media (max-width: 640px) {
+		.cf-rules li { grid-template-columns: minmax(0, 1fr); gap: 0; }
 	}
 </style>

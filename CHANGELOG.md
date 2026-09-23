@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here.
 
+## 2026-09-23 — Every Story Is a Star
+
+### Changed
+- **[/campfire](/campfire) moved outside.** The guestbook is a night clearing now: a real fire, pine trees, a moon, and a pixel squirrel on a stump (watch it for a bit, it blinks). Every story you leave flies up out of the fire and becomes a star, and the stars join into a constellation that grows with every visitor.
+- **The stories are still written down.** Under the sky sits the same plain list of every story, newest first, for reading them all in one go.
+
+### Added
+- **Sound, if you want it.** A crackle-and-hum toggle in the corner of the sky. It stays off until you press it.
+
 ## 2026-09-18 — Nobody Reads Dogs.txt
 
 ### Added

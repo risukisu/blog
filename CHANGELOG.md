@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## 2026-09-28 — Something Got Stashed
+
+### Added
+- **Something small is hidden on the site.** It catches the light once you find it. That's the only hint.
+
+### Changed
+- **Getting lost pays off now.** The 404 page has something in its pockets.
+
 ## 2026-09-23 — Every Story Is a Star
 
 ### Changed

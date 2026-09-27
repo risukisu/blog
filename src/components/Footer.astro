@@ -5,11 +5,12 @@ const today = new Date();
 <footer>
 	<div class="footer-border">╚════════════════════════════════════════════════════════╝</div>
 	<div class="footer-content">
-		<span class="footer-left">
+		<span class="footer-copy">
+			<span>&copy; {today.getFullYear()} risu</span>
 			<a href="/acorn/" class="acorn-link" aria-label="acorn" title="psst">
-				<svg viewBox="0 0 16 13" width="32" height="26" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M11 0h4v1h-4zM10 1h6v1h-6zM3 2h1v1h-1zM9 2h7v1h-7zM2 3h3v1h-3zM9 3h4v1h-4zM14 3h2v1h-2zM1 4h5v1h-5zM8 4h4v1h-4zM14 4h1v1h-1zM0 5h1v1h-1zM2 5h4v1h-4zM8 5h4v1h-4zM0 6h6v1h-6zM7 6h5v1h-5zM1 7h11v1h-11zM2 8h10v1h-10zM2 9h10v1h-10zM3 10h9v1h-9zM4 11h7v1h-7zM3 12h3v1h-3zM7 12h3v1h-3z"></path></svg>
+				<svg viewBox="0 0 16 13" width="16" height="13" shape-rendering="crispEdges" aria-hidden="true"><path fill="currentColor" d="M11 0h4v1h-4zM10 1h6v1h-6zM3 2h1v1h-1zM9 2h7v1h-7zM2 3h3v1h-3zM9 3h4v1h-4zM14 3h2v1h-2zM1 4h5v1h-5zM8 4h4v1h-4zM14 4h1v1h-1zM0 5h1v1h-1zM2 5h4v1h-4zM8 5h4v1h-4zM0 6h6v1h-6zM7 6h5v1h-5zM1 7h11v1h-11zM2 8h10v1h-10zM2 9h10v1h-10zM3 10h9v1h-9zM4 11h7v1h-7zM3 12h3v1h-3zM7 12h3v1h-3z"></path></svg>
 			</a>
-			<span>&copy; {today.getFullYear()} risu &middot; random memories</span>
+			<span>&middot; random memories</span>
 		</span>
 		<div class="footer-links">
 			<a href="/rss.xml">[rss]</a>
@@ -50,26 +51,26 @@ const today = new Date();
 	}
 	.footer-links {
 		display: flex;
-		gap: 0.5em;
+		flex-wrap: wrap;
+		gap: 0.2em 0.5em;
 	}
-	.footer-left {
-		display: flex;
+	.footer-copy {
+		display: inline-flex;
 		align-items: center;
-		gap: 0.4em;
+		gap: 0.45em;
 	}
 	.acorn-link {
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		min-width: 44px;
-		min-height: 44px;
-		margin-left: -6px;
-		color: var(--amber);
-		opacity: 0.55;
-		transition: opacity 0.2s, filter 0.2s;
+		padding: 6px 4px;
+		margin: -6px -4px;
+		color: var(--text-muted);
+		opacity: 0.7;
+		transition: color 0.2s, opacity 0.2s, filter 0.2s;
 	}
 	.acorn-link:hover,
 	.acorn-link:focus-visible {
+		color: var(--amber);
 		opacity: 1;
 		filter: drop-shadow(0 0 6px rgba(255, 183, 0, 0.45));
 	}
@@ -90,6 +91,7 @@ const today = new Date();
 	}
 	.friends-link {
 		position: relative;
+		white-space: nowrap;
 	}
 	.blink-dot {
 		display: inline-block;

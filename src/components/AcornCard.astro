@@ -1,0 +1,437 @@
+---
+// Easter egg: risu as a foil trading card from a made-up game.
+// Lives at /acorn, on the 404 page, and behind the footer squirrel.
+// All card geometry is in cqw (1px of the 560px master card = 1/5.6 cqw),
+// so the card scales as one piece.
+interface Props {
+	compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<div class:list={['acorn-stage', { compact }]} data-acorn-stage>
+	<img class="acorn-backdrop" src="/acorn/risu-card-art.svg" alt="" aria-hidden="true" />
+	<div class="acorn-float">
+		<div class="acorn-card" data-acorn-card>
+			<img
+				class="art"
+				src="/acorn/risu-card-art.svg"
+				alt="The risu braille squirrel glowing amber in front of a scanline sun and a cyan grid horizon"
+			/>
+			<div class="scrim"></div>
+
+			<div class="plate name-plate">
+				<span class="prompt">&gt;_</span>
+				<p class="name">risu</p>
+				<div class="cost" role="img" aria-label="cost: two, one prompt, one acorn">
+					<span class="pip generic">2</span>
+					<span class="pip cyan">
+						<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4l4.5 4-4.5 4"></path><path d="M8.5 12.5h5"></path></svg>
+					</span>
+					<span class="pip amber">
+						<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3V1.5"></path><path d="M2.8 6.6c.3-2.3 2.4-3.6 5.2-3.6s4.9 1.3 5.2 3.6z"></path><path d="M3.8 6.6c.1 3.6 1.9 6.3 4.2 7.9 2.3-1.6 4.1-4.3 4.2-7.9"></path></svg>
+					</span>
+				</div>
+			</div>
+
+			<div class="plate type-bar">
+				<p>Unique Familiar — Squirrel Architect</p>
+				<span class="set">&gt;_</span>
+			</div>
+
+			<div class="rules">
+				<p><b>Ship It</b> <i>(End of turn: if you built something, draw a card.)</i></p>
+				<p>Whenever you play a Skill, put an acorn on risu. An AI Agent token plays that Skill again next turn.</p>
+				<p>Spend three acorns: a Campaign becomes a System. Systems keep running after risu leaves.</p>
+				<div class="rule-line"></div>
+				<p class="flavor">“Some memories are random. The good ones get committed.”</p>
+			</div>
+
+			<div class="stats" role="img" aria-label="wit 4, grit 6">
+				<div class="stat"><span class="stat-label">wit</span><span class="stat-num">4</span></div>
+				<span class="stat-slash">/</span>
+				<div class="stat"><span class="stat-label">grit</span><span class="stat-num">6</span></div>
+			</div>
+
+			<div class="card-footer">
+				<div><span>RM · 001/100 · M</span><span>RSU ★ EN — art: risu braille mascot</span></div>
+				<div class="right"><span>© 2026 risu · random memories tcg</span><span>fictional game · not for sale</span></div>
+			</div>
+
+			<div class="foil foil-drift"></div>
+			<div class="foil foil-shift"></div>
+			<div class="foil glitter"></div>
+			<div class="foil glare"></div>
+			<div class="foil edge"></div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.acorn-stage {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		display: flex;
+		justify-content: center;
+		margin: 1.5em 0;
+		padding: 56px 16px 64px;
+		background: #05070a;
+		border: 1px solid #1e2a3a;
+		border-radius: 2px;
+	}
+	.acorn-stage.compact {
+		padding: 36px 16px 44px;
+	}
+	.acorn-backdrop {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: 190%;
+		max-width: none;
+		height: auto;
+		border-radius: 0;
+		transform: translate(-50%, -40%);
+		filter: blur(7px) brightness(0.5) saturate(1.25);
+		z-index: -2;
+		pointer-events: none;
+	}
+	.acorn-stage::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background: radial-gradient(ellipse at 50% 50%, rgba(5, 7, 10, 0) 30%, rgba(5, 7, 10, 0.88) 100%);
+	}
+	.acorn-float {
+		width: min(560px, 100%);
+		container-type: inline-size;
+		animation: acorn-float 7s ease-in-out infinite;
+	}
+	.compact .acorn-float {
+		width: min(440px, 100%);
+	}
+
+	/* the card */
+	.acorn-card {
+		position: relative;
+		aspect-ratio: 560 / 782;
+		overflow: hidden;
+		border-radius: 4.286cqw;
+		background: #0a0e14;
+		color: #c5cdd9;
+		font-family: 'JetBrains Mono', monospace;
+		line-height: 1.45;
+		transform: perspective(1400px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+		transition: transform 0.18s ease-out;
+		box-shadow:
+			0 0 0 1px rgba(0, 229, 255, 0.35),
+			0 0 90px rgba(0, 229, 255, 0.28),
+			0 0 40px rgba(255, 183, 0, 0.18),
+			0 40px 90px rgba(0, 0, 0, 0.7);
+	}
+	.acorn-card p {
+		margin: 0;
+	}
+	.art {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		max-width: none;
+		object-fit: cover;
+		border-radius: 0;
+		display: block;
+	}
+	.scrim {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 58.93cqw;
+		background: linear-gradient(180deg, rgba(10, 14, 20, 0) 0%, rgba(10, 14, 20, 0.7) 30%, rgba(10, 14, 20, 0.96) 62%);
+	}
+
+	.plate {
+		position: absolute;
+		left: 3.214cqw;
+		right: 3.214cqw;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		background: rgba(13, 17, 23, 0.9);
+		border: 1px solid rgba(0, 229, 255, 0.6);
+		border-radius: 2px;
+		box-shadow: 0 0 14px rgba(0, 229, 255, 0.32);
+	}
+	.name-plate {
+		top: 3.214cqw;
+		height: 10.357cqw;
+		gap: 2.143cqw;
+		padding: 0 2.143cqw 0 2.857cqw;
+		box-shadow:
+			0 0 14px rgba(0, 229, 255, 0.35),
+			inset 0 0 0 3px rgba(10, 14, 20, 0.9),
+			inset 0 0 0 4px rgba(0, 229, 255, 0.18);
+	}
+	.prompt {
+		font-size: 3.571cqw;
+		font-weight: 700;
+		color: #39ff14;
+		text-shadow: 0 0 8px rgba(57, 255, 20, 0.5);
+	}
+	.name {
+		flex-grow: 1;
+		font-size: 5.714cqw;
+		line-height: 1;
+		font-weight: 700;
+		letter-spacing: -0.09cqw;
+		color: #e6edf3;
+	}
+	.cost {
+		display: flex;
+		align-items: center;
+		gap: 0.893cqw;
+	}
+	.pip {
+		width: 5cqw;
+		height: 5cqw;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 2px;
+		font-size: 2.679cqw;
+		font-weight: 700;
+	}
+	.pip svg {
+		width: 2.8cqw;
+		height: 2.8cqw;
+	}
+	.pip.generic {
+		border: 1px solid #6b7b8f;
+		background: #131a24;
+		color: #e6edf3;
+	}
+	.pip.cyan {
+		border: 1px solid #00e5ff;
+		background: #003845;
+		color: #00e5ff;
+		box-shadow: 0 0 8px rgba(0, 229, 255, 0.45);
+	}
+	.pip.amber {
+		border: 1px solid #ffb700;
+		background: #2a1a00;
+		color: #ffb700;
+		box-shadow: 0 0 8px rgba(255, 183, 0, 0.45);
+	}
+
+	.type-bar {
+		top: 81.07cqw;
+		height: 7.857cqw;
+		justify-content: space-between;
+		padding: 0 2.5cqw 0 2.857cqw;
+	}
+	.type-bar p {
+		font-size: 2.768cqw;
+		font-weight: 700;
+		color: #e6edf3;
+	}
+	.set {
+		font-size: 2.679cqw;
+		font-weight: 700;
+		color: #ffb700;
+		text-shadow: 0 0 8px rgba(255, 183, 0, 0.7);
+	}
+
+	.rules {
+		position: absolute;
+		left: 4.643cqw;
+		right: 4.643cqw;
+		top: 88.93cqw;
+		height: 36.43cqw;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25cqw;
+		padding: 2.857cqw 3.214cqw 4.286cqw;
+		background: rgba(10, 14, 20, 0.8);
+		backdrop-filter: blur(3px);
+		border: 1px solid #1e2a3a;
+		border-top: none;
+		font-size: 2.321cqw;
+		line-height: 1.45;
+		color: #c5cdd9;
+	}
+	.rules b {
+		color: #e6edf3;
+	}
+	.rules i,
+	.flavor {
+		font-style: italic;
+		color: #8b9bb0;
+	}
+	.rule-line {
+		height: 1px;
+		margin: 0.36cqw 0;
+		background: #1e2a3a;
+	}
+
+	.stats {
+		position: absolute;
+		right: 3.214cqw;
+		top: 121.79cqw;
+		width: 22.14cqw;
+		height: 8.214cqw;
+		box-sizing: border-box;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1.786cqw;
+		background: #0d1117;
+		border: 1px solid #ffb700;
+		border-radius: 2px;
+		box-shadow: 0 0 14px rgba(255, 183, 0, 0.45);
+	}
+	.stat {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.36cqw;
+		line-height: 1;
+	}
+	.stat-label {
+		font-size: 1.518cqw;
+		letter-spacing: 0.18cqw;
+		color: #6b7b8f;
+	}
+	.stat-num {
+		font-size: 3.75cqw;
+		font-weight: 700;
+		color: #e6edf3;
+	}
+	.stat-slash {
+		font-size: 3.571cqw;
+		color: #ffb700;
+	}
+
+	.card-footer {
+		position: absolute;
+		left: 3.929cqw;
+		right: 3.929cqw;
+		top: 131.43cqw;
+		display: flex;
+		justify-content: space-between;
+		font-size: 1.696cqw;
+		line-height: 1.35;
+		letter-spacing: 0.07cqw;
+		color: #6b7b8f;
+	}
+	.card-footer div {
+		display: flex;
+		flex-direction: column;
+		gap: 0.36cqw;
+	}
+	.card-footer .right {
+		align-items: flex-end;
+	}
+
+	/* foil */
+	.foil {
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		border-radius: inherit;
+	}
+	.foil-drift {
+		mix-blend-mode: color-dodge;
+		opacity: calc(0.1 + 0.2 * var(--hot, 0));
+		transition: opacity 0.35s ease-out;
+		background-image: repeating-linear-gradient(115deg, #ff2d7b 0%, #ffb700 6%, #39ff14 12%, #00e5ff 18%, #9b7df0 24%, #ff2d7b 30%);
+		background-size: 320% 320%;
+		animation: acorn-foil 9s ease-in-out infinite alternate;
+	}
+	.foil-shift {
+		mix-blend-mode: overlay;
+		opacity: calc(0.12 + 0.26 * var(--hot, 0));
+		background-image: linear-gradient(120deg, rgba(0, 0, 0, 0) 15%, rgba(255, 45, 123, 0.9) 32%, rgba(255, 183, 0, 0.9) 42%, rgba(57, 255, 20, 0.8) 50%, rgba(0, 229, 255, 0.9) 58%, rgba(155, 125, 240, 0.9) 68%, rgba(0, 0, 0, 0) 85%);
+		background-size: 260% 260%;
+		background-position: var(--fx, 70%) var(--fy, 84%);
+		transition: background-position 0.2s ease-out, opacity 0.35s ease-out;
+	}
+	.glitter {
+		mix-blend-mode: color-dodge;
+		opacity: calc(0.2 + 0.2 * var(--hot, 0));
+		transition: opacity 0.35s ease-out;
+		background-image: url('/acorn/foil-sparkle.svg');
+		background-size: 256px 256px;
+	}
+	.glare {
+		mix-blend-mode: overlay;
+		opacity: calc(0.35 + 0.5 * var(--hot, 0));
+		transition: opacity 0.35s ease-out;
+		background-image: radial-gradient(circle at var(--gx, 30%) var(--gy, 16%), rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.35) 18%, rgba(255, 255, 255, 0) 42%, rgba(0, 0, 0, 0.35) 90%);
+	}
+	.edge {
+		box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+	}
+
+	@keyframes acorn-foil {
+		0% { background-position: 0% 30%; }
+		100% { background-position: 100% 70%; }
+	}
+	@keyframes acorn-float {
+		0%, 100% { transform: translateY(0); }
+		50% { transform: translateY(-9px); }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.acorn-float,
+		.foil-drift {
+			animation: none;
+		}
+		.acorn-card,
+		.foil-shift {
+			transition: none;
+		}
+	}
+</style>
+
+<script>
+	const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	document.querySelectorAll<HTMLElement>('[data-acorn-stage]').forEach((stage) => {
+		const card = stage.querySelector<HTMLElement>('[data-acorn-card]');
+		if (!card) return;
+		let frame = 0;
+
+		const reset = () => {
+			cancelAnimationFrame(frame);
+			for (const v of ['--rx', '--ry', '--gx', '--gy', '--fx', '--fy', '--hot']) card.style.removeProperty(v);
+		};
+
+		stage.addEventListener('pointermove', (e) => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(() => {
+				const s = stage.getBoundingClientRect();
+				const c = card.getBoundingClientRect();
+				const px = (e.clientX - s.left) / s.width;
+				const py = (e.clientY - s.top) / s.height;
+				const clamp = (n: number) => Math.max(-10, Math.min(110, n));
+				const gx = clamp(((e.clientX - c.left) / c.width) * 100);
+				const gy = clamp(((e.clientY - c.top) / c.height) * 100);
+				if (!still) {
+					card.style.setProperty('--rx', `${((0.5 - py) * 18).toFixed(2)}deg`);
+					card.style.setProperty('--ry', `${((px - 0.5) * 22).toFixed(2)}deg`);
+				}
+				card.style.setProperty('--gx', `${gx.toFixed(1)}%`);
+				card.style.setProperty('--gy', `${gy.toFixed(1)}%`);
+				card.style.setProperty('--fx', `${(100 - gx).toFixed(1)}%`);
+				card.style.setProperty('--fy', `${(100 - gy).toFixed(1)}%`);
+				card.style.setProperty('--hot', '1');
+			});
+		});
+		stage.addEventListener('pointerleave', reset);
+	});
+</script>

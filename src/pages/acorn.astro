@@ -1,0 +1,54 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AcornCard from '../components/AcornCard.astro';
+import LinkPreviewTooltip from '../components/LinkPreviewTooltip.astro';
+import Terminal from '../components/Terminal.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`acorn — ${SITE_TITLE}`} description="A hidden foil card: risu, the Squirrel Architect." noindex />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat stash/acorn.card" />
+
+			<h1 class="stash-title">the acorn stash</h1>
+			<p class="stash-msg">&gt; you found it. one card inside.</p>
+			<p class="stash-msg">&gt; move your cursor over it to catch the foil.</p>
+
+			<AcornCard />
+
+			<a href="/" class="stash-back">[back to the blog]</a>
+
+			<Terminal />
+		</main>
+		<Footer />
+		<LinkPreviewTooltip />
+	</body>
+</html>
+
+<style>
+	.stash-title {
+		font-size: 1.4em;
+		color: var(--amber);
+		margin: 1em 0 0.6em;
+	}
+	.stash-msg {
+		color: var(--text-muted);
+		font-size: 0.9em;
+		margin: 0.2em 0;
+	}
+	.stash-back {
+		display: inline-block;
+		margin-bottom: 2em;
+		font-size: 0.9em;
+		font-weight: 700;
+	}
+</style>

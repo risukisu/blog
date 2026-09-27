@@ -177,7 +177,7 @@ All notable changes to this project are documented here.
 - **Projects page** at `/projects` — placeholder for future project showcases
 - **Projects** nav item in header between Blog and Me
 - **LinkedIn** link on the Me page
-- **GA4 tracking** (Measurement ID: G-TN2YY0219L), gated behind cookie consent
+- **GA4 tracking**, gated behind cookie consent
 - **GDPR cookie consent system** — full-width banner on first visit, persistent cookie icon (bottom-left, amber) on every page, preferences panel to view/change consent, GA4 only loads after explicit consent
 
 ## 2026-02-27 — Custom Domain & Feature Work

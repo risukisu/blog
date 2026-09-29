@@ -1,0 +1,88 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import TerminalPrompt from '../components/TerminalPrompt.astro';
+import AsciiBox from '../components/AsciiBox.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`risu-mcp privacy policy — ${SITE_TITLE}`} description="Privacy policy for risu-mcp, a private tool that reads my own Google Analytics and Search Console data." noindex />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<TerminalPrompt command="cat PRIVACY" />
+
+			<AsciiBox title="risu-mcp privacy policy" heading="h1">
+				<p class="updated">Last updated: 29 September 2026</p>
+
+				<h2>What it is</h2>
+				<p>
+					risu-mcp is a private tool, and I (Andrzej Białaś, risu) am its only user. It connects my own
+					Google account to the AI assistant I work with on my computer. It runs only there, and it isn't
+					offered to anyone else.
+				</p>
+
+				<h2>What it can access</h2>
+				<p>
+					When I sign in, Google gives it access to Google Analytics and Google Search Console for the
+					websites I run, such as risu.pl and skillcraft.cloud. It reads traffic and search reports, and it
+					can submit sitemaps and indexing requests for those sites. I use that access for nothing else.
+				</p>
+
+				<h2>How the data is used</h2>
+				<p>
+					Reports are fetched to my computer when I ask for them. My AI assistant (Claude Code, made by
+					Anthropic) reads them to help me understand how my sites are doing. That's the only use.
+				</p>
+
+				<h2>Where it's kept</h2>
+				<p>
+					The sign-in tokens stay on my computer. Reports I build from the data stay in my private files.
+				</p>
+
+				<h2>What it never does</h2>
+				<p>
+					It doesn't sell the data, use it for advertising, or pass it to anyone beyond that assistant. It
+					never touches anyone else's Google account.
+				</p>
+
+				<h2>Removing access</h2>
+				<p>
+					Access can be revoked at any time at
+					<a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener noreferrer">myaccount.google.com/permissions</a>.
+				</p>
+
+				<h2>Contact</h2>
+				<p>
+					My contact links are on <a href="/me">my about page</a>.
+				</p>
+			</AsciiBox>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.updated {
+		margin: 0 0 1.25em;
+		color: var(--text-muted);
+		font-size: 0.85em;
+	}
+	h2 {
+		margin: 1.4em 0 0.4em;
+		font-size: 1em;
+		color: var(--text-bright);
+	}
+	p {
+		margin: 0 0 0.8em;
+		line-height: 1.6;
+	}
+	a {
+		color: var(--cyan);
+	}
+</style>

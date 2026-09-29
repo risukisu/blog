@@ -10,8 +10,8 @@ import { rehypeLinks } from './src/plugins/rehype-links.js';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://risu.pl',
-  // /acorn is an easter egg: kept out of the sitemap (and noindex in its head)
-  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/acorn') })],
+  // /acorn (easter egg) and /risu-mcp (privacy policy for a private tool) stay out of the sitemap; both are noindex in their head
+  integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/acorn') && !page.includes('/risu-mcp') })],
 
   markdown: {
     shikiConfig: {

@@ -1,0 +1,19 @@
+---
+// Short address for my private dashboard. GitHub Pages can't proxy a path, so this page only
+// forwards to https://cc.risu.pl. Noindex here, out of the sitemap (astro.config.mjs).
+const target = 'https://cc.risu.pl';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex" />
+		<meta http-equiv="refresh" content={`0; url=${target}`} />
+		<title>Redirecting…</title>
+	</head>
+	<body>
+		<p>Redirecting to <a href={target}>{target}</a>…</p>
+	</body>
+</html>

@@ -36,6 +36,7 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 			</div>
 
 			<div class="cf-stars" id="cf-stars"></div>
+			<div class="cf-feat" id="cf-feat"></div>
 
 			<div class="cf-card" id="cf-card" aria-hidden="true">
 				<div class="cf-card-top"><span class="cf-card-name" id="cf-card-name"></span><span class="cf-card-date" id="cf-card-date"></span></div>
@@ -157,6 +158,11 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 	.cf-scene .cf-card-msg { margin-top: 5px; font-size: 13px; line-height: 1.55; color: var(--cf-star); overflow-wrap: anywhere; }
 	.cf-scene .cf-card-tag { margin-top: 9px; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cf-glow); }
 	.cf-card-tag:empty { display: none; }
+	/* featured stories: gold, and their cards stay open */
+	.cf-feat { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+	.cf-card-feat { max-width: min(220px, calc(100vw - 32px)); border-color: rgba(255, 196, 84, 0.5); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 0 22px -8px rgba(255, 196, 84, 0.55); }
+	.cf-card-feat .cf-card-name { color: #FFD98A; }
+	.cf-scene .cf-card-feat .cf-card-tag { margin-top: 7px; color: #FFC454; }
 
 	/* the prompt */
 	.cf-prompt {
@@ -208,6 +214,13 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 		.cf-scene .cf-title { margin-top: 8px; }
 		.cf-scene .cf-lede { margin-top: 12px; font-size: 13.5px; line-height: 1.6; }
 		.cf-scene .cf-legend { margin-top: 10px; font-size: 12px; }
+		/* phones: the gold border says "featured", so the tag line goes */
+		.cf-card-feat { max-width: min(172px, calc(100vw - 32px)); padding: 6px 9px 7px; }
+		.cf-card-feat .cf-card-top { gap: 8px; }
+		.cf-card-feat .cf-card-name { font-size: 11.5px; }
+		.cf-card-feat .cf-card-date { font-size: 9.5px; }
+		.cf-scene .cf-card-feat .cf-card-msg { margin-top: 2px; font-size: 11px; line-height: 1.4; }
+		.cf-scene .cf-card-feat .cf-card-tag { display: none; }
 	}
 	@media (max-width: 640px) {
 		.cf-prompt { padding: 11px 14px 8px; bottom: calc(12px + env(safe-area-inset-bottom)); }
@@ -234,6 +247,8 @@ const API_BASE = 'https://campfire-api-nine.vercel.app';
 	.cf-entry-date { color: var(--text-muted); font-size: 0.75em; }
 	.cf-entry-msg { margin: 0.15em 0 0; font-size: 0.95em; }
 	.cf-entry-new .cf-entry-name::after { content: " *"; color: var(--amber); }
+	.cf-entry-feat .cf-entry-name { color: #D9A21B; }
+	.cf-entry-tag { font-size: 0.7em; letter-spacing: 0.12em; text-transform: uppercase; color: #D9A21B; border: 1px solid currentColor; border-radius: 2px; padding: 0 0.45em; }
 	.cf-rules { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35em; }
 	.cf-rules li { display: grid; grid-template-columns: 11ch minmax(0, 1fr); gap: 1em; }
 	.cf-k { color: var(--amber); font-weight: 700; }

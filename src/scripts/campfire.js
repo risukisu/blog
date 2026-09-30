@@ -11,7 +11,7 @@ const cv = $('cf-sky'), ctx = cv.getContext('2d');
 const form = $('cf-sign'), fName = $('cf-name'), fMsg = $('cf-msg'), fSite = $('cf-site'), fCount = $('cf-count'), fStatus = $('cf-status'), sendBtn = $('cf-send');
 const intro = $('cf-intro'), legend = $('cf-legend'), starLayer = $('cf-stars'), card = $('cf-card');
 const cName = $('cf-card-name'), cDate = $('cf-card-date'), cMsg = $('cf-card-msg'), cTag = $('cf-card-tag');
-const list = $('cf-entries');
+const list = $('cf-entries'), featLayer = $('cf-feat');
 const mq = matchMedia('(prefers-reduced-motion: reduce)');
 const coarse = matchMedia('(pointer: coarse)');
 let RM = mq.matches;
@@ -54,20 +54,23 @@ function nearestEarlier(n) {
   notes.forEach((o, i) => { if (o.born === Infinity) return; const d = uvDist(o, n.u, n.v); if (d < bd) { bd = d; best = i; } });
   return best;
 }
-function addNote(entry, fresh) {
+function addNote(entry, fresh, feat) {
   const pos = spotFor(entry.id);
-  const n = { id: entry.id, name: entry.name, msg: entry.message, ts: entry.ts, u: pos.u, v: pos.v, mine: !!fresh, ph: Math.random() * TAU, born: fresh ? Infinity : -1e9, x: 0, y: 0 };
+  const n = { id: entry.id, name: entry.name, msg: entry.message, ts: entry.ts, u: pos.u, v: pos.v, mine: !!fresh, feat: !!feat, ph: Math.random() * TAU, born: fresh ? Infinity : -1e9, x: 0, y: 0 };
   const li = nearestEarlier(n);
   notes.push(n);
   if (li >= 0) edges.push({ a: li, b: notes.length - 1, at: fresh ? Infinity : -1e9 });
   place(n);
   return n;
 }
-function setSky(entries) {   // entries arrive newest first
+function setSky(entries, featured) {   // both arrive newest first
   notes.length = 0; edges.length = 0;
-  const sky = entries.slice(0, SKY_MAX).reverse();
+  // featured stories always make the sky, however old; the rest are the newest SKY_MAX
+  const featIds = new Set(featured.map(e => e.id)), sky = entries.slice(0, SKY_MAX);
+  for (const e of featured) if (!sky.some(o => o.id === e.id)) sky.push(e);
+  sky.sort((a, b) => a.ts - b.ts);
   spacing = clamp(0.7 * Math.sqrt(ASPECT / Math.max(1, sky.length)), 0.085, 0.2);
-  sky.forEach(e => addNote(e, false));
+  sky.forEach(e => addNote(e, false, featIds.has(e.id)));
   // the lines draw themselves in, oldest first
   edges.forEach((e, k) => { e.at = RM ? -1e9 : T + 0.3 + k * 0.035; });
 }
@@ -104,7 +107,7 @@ function layout() {
   L.nEmber = Math.round(12 + 26 * fs);
   L.nSmoke = Math.round(7 + 9 * fs);
   notes.forEach(place);
-  buildBg(); buildTrees(); buildStars(); buildCamp(); buildStarButtons();
+  buildBg(); buildTrees(); buildStars(); buildCamp(); buildStarButtons(); placeFeatCards();
 }
 
 /* sky, milky band and moon are painted once per resize */
@@ -256,6 +259,7 @@ const HOT = [[0, 1], [0.25, 0.7], [0.6, 0.18], [1, 0]], SOFT = [[0, 0.55], [0.5,
 const SPR = {
   core: glow('255,241,193', HOT), flame: glow('255,154,60', HOT), red: glow('255,90,31', HOT),
   star: glow('233,237,255', [[0, 1], [0.15, 0.45], [0.5, 0.08], [1, 0]]), warm: glow('255,214,160', [[0, 1], [0.15, 0.5], [0.5, 0.1], [1, 0]]),
+  gold: glow('255,196,84', [[0, 1], [0.15, 0.55], [0.5, 0.12], [1, 0]]),
   ember: glow('255,140,60', [[0, 1], [0.4, 0.3], [1, 0]], 16), smoke: glow('130,136,168', SOFT)
 };
 
@@ -421,11 +425,19 @@ function drawConstellation() {
     ctx.strokeStyle = hi ? 'rgba(233,237,255,0.42)' : 'rgba(233,237,255,0.17)';
     seg(A.x + ux * g0, A.y + uy * g0, A.x + ux * (g0 + len), A.y + uy * (g0 + len));
   }
+  // a featured card pushed away from its star keeps a faint gold thread back to it
+  ctx.strokeStyle = 'rgba(255,196,84,0.35)';
+  for (const r of featRects) {
+    const n = r.n, qx = clamp(n.x, r.x0, r.x1), qy = clamp(n.y, r.y0, r.y1), d = Math.hypot(qx - n.x, qy - n.y);
+    if (d < 24) continue;
+    seg(n.x + (qx - n.x) / d * 11, n.y + (qy - n.y) / d * 11, qx, qy);
+  }
   ctx.globalCompositeOperation = 'lighter';
   notes.forEach((n, i) => {
     if (n.born === Infinity) return;
     const age = T - n.born, b = age < 1.1 ? Math.max(0, easeOutBack(clamp(age / 1.1, 0, 1))) : 1;
     const pulse = RM ? 1 : 0.86 + 0.14 * Math.sin(T * 1.1 + n.ph), act = i === activeIdx;
+    if (n.feat) { drawFeatured(n, b, pulse, act); return; }
     const size = (n.mine ? 14 : 12) * b * pulse * (act ? 1.45 : 1);
     ctx.globalAlpha = 0.9; ctx.drawImage(n.mine ? SPR.warm : SPR.star, n.x - size, n.y - size, size * 2, size * 2);
     const k = (5 + 3 * pulse) * b * (act ? 1.5 : 1);
@@ -445,6 +457,21 @@ function drawConstellation() {
     ctx.strokeStyle = 'rgba(233,237,255,0.5)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(n.x, n.y, 13, 0, TAU); ctx.stroke();
   }
+}
+
+// a featured story: gold, a size up, a slow turning glint and a flare every few seconds
+function drawFeatured(n, b, pulse, act) {
+  const flare = RM ? 0 : Math.pow(Math.max(0, Math.sin(T * 1.4 + n.ph)), 12);
+  const size = 16.5 * b * pulse * (act ? 1.3 : 1) * (1 + 0.25 * flare);
+  ctx.globalAlpha = 0.95; ctx.drawImage(SPR.gold, n.x - size, n.y - size, size * 2, size * 2);
+  ctx.strokeStyle = '#FFD98A'; ctx.lineWidth = 0.9;
+  const k = (7.5 + 3.5 * pulse + 6 * flare) * b * (act ? 1.3 : 1);
+  ctx.globalAlpha = 0.7; ctx.beginPath(); ctx.moveTo(n.x - k, n.y); ctx.lineTo(n.x + k, n.y); ctx.moveTo(n.x, n.y - k); ctx.lineTo(n.x, n.y + k); ctx.stroke();
+  const a = RM ? Math.PI / 4 : T * 0.35 + n.ph, g = k * 0.6, cx = Math.cos(a) * g, cy = Math.sin(a) * g;
+  ctx.globalAlpha = 0.3 + 0.35 * flare; ctx.lineWidth = 0.7;
+  ctx.beginPath(); ctx.moveTo(n.x - cx, n.y - cy); ctx.lineTo(n.x + cx, n.y + cy); ctx.moveTo(n.x + cy, n.y - cx); ctx.lineTo(n.x - cy, n.y + cx); ctx.stroke();
+  if (flare > 0.02) { ctx.globalAlpha = flare * 0.6; ctx.drawImage(SPR.core, n.x - 14, n.y - 14, 28, 28); }
+  ctx.globalAlpha = 1; ctx.fillStyle = '#FFF6DC'; ctx.beginPath(); ctx.arc(n.x, n.y, 2.1 * b, 0, TAU); ctx.fill();
 }
 
 function layer(path, color, ox, oy, la, lr) {
@@ -671,7 +698,7 @@ function buildStarButtons() {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'cf-star';
     b.style.left = n.x.toFixed(1) + 'px'; b.style.top = n.y.toFixed(1) + 'px';
-    b.setAttribute('aria-label', 'Story from ' + n.name + ', ' + fmtDate(n.ts) + ': ' + n.msg);
+    b.setAttribute('aria-label', (n.feat ? 'Featured story from ' : 'Story from ') + n.name + ', ' + fmtDate(n.ts) + ': ' + n.msg);
     b.addEventListener('mouseenter', () => show(i));
     b.addEventListener('mouseleave', () => pinned >= 0 ? show(pinned) : hide());
     b.addEventListener('focus', () => show(i));
@@ -683,26 +710,64 @@ function buildStarButtons() {
 function show(i) {
   const n = notes[i]; if (!n || n.born === Infinity) return;
   activeIdx = i;
+  if (n.feat) { card.classList.remove('cf-on'); if (RM) draw(); return; }   // its card is already open
   cName.textContent = n.name; cDate.textContent = fmtDate(n.ts); cMsg.textContent = n.msg;
   cTag.textContent = n.mine ? 'yours, just now' : '';
   card.classList.toggle('cf-mine', n.mine);
   card.classList.add('cf-on');
-  const cw = card.offsetWidth, ch = card.offsetHeight, m = 12;
-  // try four spots around the star, pick the one that hides the fewest other stars
-  const cands = [[n.x + 18, n.y - ch - 12], [n.x + 18, n.y + 16], [n.x - 18 - cw, n.y - ch - 12], [n.x - 18 - cw, n.y + 16]];
-  let best = cands[0], bs = 1e9;
-  cands.forEach(([x, y], k) => {
-    let sc = k * 0.1;
-    if (x < m || x + cw > W - m) sc += 20;
-    if (y < 56 || y + ch > L.formTop - 8) sc += 20;
-    notes.forEach((o, j) => { if (j !== i && o.born !== Infinity && o.x > x - 8 && o.x < x + cw + 8 && o.y > y - 8 && o.y < y + ch + 8) sc += 1; });
-    const I = L.intro;
-    if (x < I.x1 && x + cw > I.x0 && y < I.y1 && y + ch > I.y0) sc += 6;
-    if (sc < bs) { bs = sc; best = [x, y]; }
-  });
-  const x = clamp(best[0], m, Math.max(m, W - cw - m)), y = clamp(best[1], 56, Math.max(56, L.formTop - ch - 8));
+  const [x, y] = spotCard(n, i, card.offsetWidth, card.offsetHeight, featRects);
   card.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
   if (RM) draw();
+}
+// try four spots around the star, pick the one that hides the fewest other stars and open cards
+// open featured cards (avoid) cost the most, then hiding a gold star, then the intro text
+// wide: also search a grid farther out (featured cards, which must not overlap), paying for the distance
+function spotCard(n, i, cw, ch, avoid, introCost, wide) {
+  const m = 12;
+  const cands = [[n.x + 18, n.y - ch - 12], [n.x + 18, n.y + 16], [n.x - 18 - cw, n.y - ch - 12], [n.x - 18 - cw, n.y + 16],
+    [n.x - cw / 2, n.y - ch - 16], [n.x - cw / 2, n.y + 18], [n.x + 20, n.y - ch / 2], [n.x - 20 - cw, n.y - ch / 2]];
+  const base = cands.length;
+  if (wide) for (let dx = -cw - 160; dx <= 160; dx += 20) for (let dy = -ch - 160; dy <= 160; dy += 20) cands.push([n.x + dx, n.y + dy]);
+  let best = cands[0], bs = 1e9;
+  cands.forEach(([x0, y0], k) => {
+    let sc = k < base ? k * 0.1 : 1 + Math.hypot(clamp(n.x, x0, x0 + cw) - n.x, clamp(n.y, y0, y0 + ch) - n.y) / 40;
+    if (k >= base && n.x > x0 - 10 && n.x < x0 + cw + 10 && n.y > y0 - 10 && n.y < y0 + ch + 10) return;   // never sit on its own star
+    if (x0 < m || x0 + cw > W - m) sc += 20;
+    if (y0 < 56 || y0 + ch > L.formTop - 8) sc += 20;
+    const x = clamp(x0, m, Math.max(m, W - cw - m)), y = clamp(y0, 56, Math.max(56, L.formTop - ch - 8));
+    notes.forEach((o, j) => { if (j !== i && o.born !== Infinity && o.x > x - 8 && o.x < x + cw + 8 && o.y > y - 8 && o.y < y + ch + 8) sc += o.feat ? 30 : 1; });
+    const I = L.intro;
+    if (x < I.x1 && x + cw > I.x0 && y < I.y1 && y + ch > I.y0) sc += introCost || 6;
+    if (wide && x < L.fireX + 70 && x + cw > L.fireX - 70 && y + ch > L.fireY - L.flameH * 0.6) sc += 60;   // keep the fire in sight
+    for (const r of avoid) if (x < r.x1 + 6 && x + cw > r.x0 - 6 && y < r.y1 + 6 && y + ch > r.y0 - 6) sc += 100;
+    if (sc < bs) { bs = sc; best = [x, y]; }
+  });
+  return best;
+}
+
+/* featured stories keep their card open, placed clear of each other */
+let featRects = [];
+function cardNode(cls) {
+  const c = document.createElement('div'); c.className = 'cf-card ' + cls; c.setAttribute('aria-hidden', 'true');
+  const top = document.createElement('div'); top.className = 'cf-card-top';
+  const nm = document.createElement('span'); nm.className = 'cf-card-name';
+  const dt = document.createElement('span'); dt.className = 'cf-card-date';
+  const msg = document.createElement('p'); msg.className = 'cf-card-msg';
+  const tag = document.createElement('p'); tag.className = 'cf-card-tag'; tag.textContent = 'featured';
+  top.append(nm, dt); c.append(top, msg, tag);
+  return { c, nm, dt, msg };
+}
+function placeFeatCards() {
+  featLayer.textContent = ''; featRects = [];
+  notes.forEach((n, i) => {
+    if (!n.feat || n.born === Infinity) return;
+    const k = cardNode('cf-card-feat cf-on');
+    k.nm.textContent = n.name; k.dt.textContent = fmtDate(n.ts); k.msg.textContent = n.msg;
+    featLayer.appendChild(k.c);
+    const cw = k.c.offsetWidth, ch = k.c.offsetHeight, [x, y] = spotCard(n, i, cw, ch, featRects, 100, true);
+    k.c.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+    featRects.push({ x0: x, y0: y, x1: x + cw, y1: y + ch, n });
+  });
 }
 function hide() { activeIdx = -1; card.classList.remove('cf-on'); if (RM) draw(); }
 document.addEventListener('pointerdown', e => { if (pinned < 0 || e.target.closest('.cf-star, .cf-card')) return; pinned = -1; hide(); });
@@ -711,13 +776,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && activeIdx 
 /* ---------- the written list under the fire ---------- */
 let total = 0;
 function isoDay(ts) { try { return new Date(ts).toISOString().slice(0, 10); } catch (e) { return ''; } }
-function entryNode(e, fresh) {
-  const row = document.createElement('li'); row.className = 'cf-entry' + (fresh ? ' cf-entry-new' : '');
+function entryNode(e, fresh, feat) {
+  const row = document.createElement('li'); row.className = 'cf-entry' + (fresh ? ' cf-entry-new' : '') + (feat ? ' cf-entry-feat' : '');
   const meta = document.createElement('div'); meta.className = 'cf-entry-meta';
   const nm = document.createElement('span'); nm.className = 'cf-entry-name'; nm.textContent = e.name;
   const dt = document.createElement('time'); dt.className = 'cf-entry-date'; dt.textContent = isoDay(e.ts);
   try { dt.dateTime = new Date(e.ts).toISOString(); } catch (err) {}
   meta.append(nm, dt);
+  if (feat) { const tg = document.createElement('span'); tg.className = 'cf-entry-tag'; tg.textContent = 'featured'; meta.append(tg); }
   const p = document.createElement('p'); p.className = 'cf-entry-msg'; p.textContent = e.message;
   row.append(meta, p);
   return row;
@@ -727,10 +793,10 @@ function listStatus(text) {
   const li = document.createElement('li'); li.className = 'cf-entries-status'; li.textContent = text;
   list.appendChild(li);
 }
-function renderList(entries) {
+function renderList(entries, featIds) {
   if (!entries.length) return listStatus('the fire is quiet. no stories yet. sit, warm up, tell the first one.');
   list.textContent = '';
-  entries.forEach(e => list.appendChild(entryNode(e, false)));
+  entries.forEach(e => list.appendChild(entryNode(e, false, featIds.has(e.id))));
 }
 function setLegend(state) {
   const shown = notes.filter(n => n.born !== Infinity).length;
@@ -739,6 +805,7 @@ function setLegend(state) {
   else if (!shown) legend.textContent = 'no stories up there yet. yours would be the first star.';
   else if (total > shown) legend.textContent = 'the newest ' + shown + ' stories shine up there. hover or tap one to read it. every story is written down below.';
   else legend.textContent = 'every story here is a star. hover or tap one to read it.';
+  if (state === 'ok' && notes.some(n => n.feat)) legend.textContent += ' the gold ones are featured.';
 }
 
 /* ---------- signing ---------- */
@@ -897,15 +964,18 @@ if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { la
 fetch(API + '/api/entries')
   .then(r => { if (!r.ok) throw new Error('api ' + r.status); return r.json(); })
   .then(data => {
-    const entries = (Array.isArray(data && data.entries) ? data.entries : [])
-      .filter(e => e && e.id && typeof e.name === 'string' && typeof e.message === 'string' && Number.isFinite(e.ts));
+    const valid = e => e && e.id && typeof e.name === 'string' && typeof e.message === 'string' && Number.isFinite(e.ts);
+    const entries = (Array.isArray(data && data.entries) ? data.entries : []).filter(valid);
+    const featured = (Array.isArray(data && data.featured) ? data.featured : []).filter(valid).slice(0, 3);
+    const featIds = new Set(featured.map(e => e.id));
     total = entries.length;
-    setSky(entries);
-    renderList(entries);
-    buildStarButtons();
+    setSky(entries, featured);
+    renderList(entries, featIds);
+    buildStarButtons(); placeFeatCards();
     setLegend('ok');
     lastSize = ''; onResize();                          // the legend may have changed the intro's height
-    if (notes.length && !L.mobile) { pinned = notes.length - 1; show(pinned); }   // the newest story, open at rest (phones keep the sky clear)
+    // the newest story, open at rest (phones keep the sky clear); featured cards take that job when there are any
+    if (notes.length && !L.mobile && !featIds.size) { pinned = notes.length - 1; show(pinned); }
     if (RM) draw();
   })
   .catch(() => {
